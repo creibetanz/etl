@@ -28,19 +28,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_VERSION_INCLUDED
-#define ETL_VERSION_INCLUDED
+#ifndef ETL_MEMORY_MODEL_INCLUDED
+#define ETL_MEMORY_MODEL_INCLUDED
 
-#include <stdint.h>
+#include "user_type.h"
 
-///\defgroup version version
-/// Definitions of the ETL version
-///\ingroup utilities
-
-#define ETL_VERSION "11.7.0"
-#define ETL_VERSION_MAJOR 11
-#define ETL_VERSION_MINOR  7
-#define ETL_VERSION_PATCH  0
+namespace etl
+{
+  ETL_DECLARE_USER_TYPE(memory_model, int)
+  ETL_USER_TYPE(MM_SMALL,  0)
+  ETL_USER_TYPE(MM_MEDIUM, 1)
+  ETL_USER_TYPE(MM_LARGE,  2)
+  ETL_END_USER_TYPE(memory_model)
+}
 
 #endif
 

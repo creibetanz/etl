@@ -48,11 +48,19 @@ namespace
 {
   struct Data
   {
-    Data(int a, int b = 2, int c = 3, int d = 4)
+    Data(int a_, int b_ = 2, int c_ = 3, int d_ = 4)
+      : a(a_),
+        b(b_),
+        c(c_),
+        d(d_)
     {
     }
 
     Data()
+      : a(0),
+        b(0),
+        c(0),
+        d(0)
     {
     }
 
@@ -451,7 +459,7 @@ namespace
       std::thread t2(push_thread2);
       std::thread t3(pop_thread1);
       std::thread t4(pop_thread2);
-    
+
       start.store(true);
 
       // Join the threads with the main thread

@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -28,19 +26,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_VERSION_INCLUDED
-#define ETL_VERSION_INCLUDED
+#ifndef ETL_NULL_TYPE_INCLUDED
+#define ETL_NULL_TYPE_INCLUDED
 
-#include <stdint.h>
+#undef ETL_FILE
+#define ETL_FILE "50"
 
-///\defgroup version version
-/// Definitions of the ETL version
-///\ingroup utilities
+namespace etl
+{
+  template <size_t N>
+  class null_type
+  {
+  private:
 
-#define ETL_VERSION "11.7.0"
-#define ETL_VERSION_MAJOR 11
-#define ETL_VERSION_MINOR  7
-#define ETL_VERSION_PATCH  0
+    null_type();
+    null_type(const null_type&);
+    null_type& operator=(const null_type&);
+  };
+}
+
+#undef ETL_FILE
 
 #endif
-

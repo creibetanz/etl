@@ -121,7 +121,7 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum number of items that can be queued.
     //*************************************************************************
-    ETL_CONSTEXPR size_type max_size() const
+    size_type max_size() const
     {
       return CAPACITY;
     }
@@ -129,7 +129,7 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum number of items that can be queued.
     //*************************************************************************
-    ETL_CONSTEXPR size_type capacity() const
+    size_type capacity() const
     {
       return CAPACITY;
     }
@@ -192,7 +192,7 @@ namespace etl
       }
 
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -205,7 +205,7 @@ namespace etl
         out = 0;
       }
       --current_size;
-      --construct_count;
+      ETL_DECREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -216,14 +216,14 @@ namespace etl
       in = 0;
       out = 0;
       current_size = 0;
-      construct_count.clear();
+      ETL_RESET_DEBUG_COUNT;
     }
 
-    size_type in;                     ///< Where to input new data.
-    size_type out;                    ///< Where to get the oldest data.
-    size_type current_size;           ///< The number of items in the queue.
-    const size_type CAPACITY;         ///< The maximum number of items in the queue.
-    etl::debug_count construct_count; ///< For internal debugging purposes.
+    size_type in;             ///< Where to input new data.
+    size_type out;            ///< Where to get the oldest data.
+    size_type current_size;   ///< The number of items in the queue.
+    const size_type CAPACITY; ///< The maximum number of items in the queue.
+    ETL_DECLARE_DEBUG_COUNT;  ///< For internal debugging purposes.
 
   };
 
