@@ -61,6 +61,8 @@ SOFTWARE.
   #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
+#define ETL_VECTOR_CPP03_CODE 0
+
 //*****************************************************************************
 ///\defgroup vector vector
 /// A vector with the capacity defined at compile time.
@@ -422,6 +424,7 @@ namespace etl
       create_back(value);
     }
 
+#if !ETL_CPP11_SUPPORTED || ETL_VECTOR_CPP03_CODE
     //*********************************************************************
     /// Constructs a value at the end of the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
@@ -485,6 +488,23 @@ namespace etl
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT;
     }
+#else
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    template <typename... Args >
+    void emplace_back(Args&&... args)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+#endif
+      ::new (p_end) T(std::forward<Args>(args)...);
+      ++p_end;
+      ETL_INCREMENT_DEBUG_COUNT;
+    }
+#endif
 
     //*************************************************************************
     /// Removes an element from the end of the vector.
