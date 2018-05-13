@@ -29,6 +29,7 @@ SOFTWARE.
 #include "UnitTest++.h"
 
 #include <queue>
+#include <type_traits>
 
 #include "queue.h"
 
@@ -100,6 +101,7 @@ namespace
     //*************************************************************************
     TEST(test_delete_via_iqueue)
     {
+#if defined(ETL_POLYMORPHIC_QUEUE)
       etl::queue<int, 4>* pqueue = new etl::queue<int, 4>;
 
       etl::iqueue<int>* piqueue = pqueue;
@@ -110,6 +112,7 @@ namespace
       piqueue->push(4);
 
       delete piqueue;
+#endif
     }
 
     //*************************************************************************
@@ -563,6 +566,48 @@ namespace
 
       CHECK_EQUAL(4, queue.front());
       queue.pop();
+    }
+
+    //*************************************************************************
+    TEST(test_push_memory_model_small)
+    {
+      etl::queue<int, 4, etl::memory_model::SMALL> queue;
+
+      typedef etl::queue<int, 4, etl::memory_model::SMALL>::size_type queue_size_type;
+      bool is_same = std::is_same<uint8_t, queue_size_type>::value;
+      CHECK(is_same);
+
+      queue.push(1);
+      CHECK_EQUAL(1U, queue.size());
+
+      queue.push(2);
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+
+      queue.pop();
+      CHECK_EQUAL(2, queue.front());
+    }
+
+    //*************************************************************************
+    TEST(test_push_memory_model_medium)
+    {
+      etl::queue<int, 4, etl::memory_model::MEDIUM> queue;
+
+      typedef etl::queue<int, 4, etl::memory_model::MEDIUM>::size_type queue_size_type;
+      bool is_same = std::is_same<uint16_t, queue_size_type>::value;
+      CHECK(is_same);
+
+      queue.push(1);
+      CHECK_EQUAL(1U, queue.size());
+
+      queue.push(2);
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+
+      queue.pop();
+      CHECK_EQUAL(2, queue.front());
     }
   };
 }

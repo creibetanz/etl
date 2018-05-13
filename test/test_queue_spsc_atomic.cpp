@@ -105,6 +105,159 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_size_push_pop_memory_model_small)
+    {
+      etl::queue_spsc_atomic<int, 4, etl::memory_model::SMALL> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      CHECK_EQUAL(4U, queue.available());
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      CHECK_EQUAL(1U, queue.size());
+      CHECK_EQUAL(3U, queue.available());
+
+      queue.push(2);
+      CHECK_EQUAL(2U, queue.size());
+      CHECK_EQUAL(2U, queue.available());
+
+      queue.push(3);
+      CHECK_EQUAL(3U, queue.size());
+      CHECK_EQUAL(1U, queue.available());
+
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+      CHECK_EQUAL(0U, queue.available());
+
+      CHECK(!queue.push(5));
+      CHECK(!queue.push(5));
+
+      int i;
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(0U, queue.size());
+
+      CHECK(!queue.pop(i));
+      CHECK(!queue.pop(i));
+    }
+
+    //*************************************************************************
+    TEST(test_size_push_pop_memory_model_medium)
+    {
+      etl::queue_spsc_atomic<int, 4, etl::memory_model::MEDIUM> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      CHECK_EQUAL(4U, queue.available());
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      CHECK_EQUAL(1U, queue.size());
+      CHECK_EQUAL(3U, queue.available());
+
+      queue.push(2);
+      CHECK_EQUAL(2U, queue.size());
+      CHECK_EQUAL(2U, queue.available());
+
+      queue.push(3);
+      CHECK_EQUAL(3U, queue.size());
+      CHECK_EQUAL(1U, queue.available());
+
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+      CHECK_EQUAL(0U, queue.available());
+
+      CHECK(!queue.push(5));
+      CHECK(!queue.push(5));
+
+      int i;
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(0U, queue.size());
+
+      CHECK(!queue.pop(i));
+      CHECK(!queue.pop(i));
+    }
+
+    //*************************************************************************
+    TEST(test_size_empace_pop)
+    {
+      etl::queue_spsc_atomic<int, 4> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      CHECK_EQUAL(4U, queue.available());
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      CHECK_EQUAL(1U, queue.size());
+      CHECK_EQUAL(3U, queue.available());
+
+      queue.push(2);
+      CHECK_EQUAL(2U, queue.size());
+      CHECK_EQUAL(2U, queue.available());
+
+      queue.push(3);
+      CHECK_EQUAL(3U, queue.size());
+      CHECK_EQUAL(1U, queue.available());
+
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+      CHECK_EQUAL(0U, queue.available());
+
+      CHECK(!queue.emplace(5));
+      CHECK(!queue.emplace(5));
+
+      int i;
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(0U, queue.size());
+
+      CHECK(!queue.pop(i));
+      CHECK(!queue.pop(i));
+    }
+
+    //*************************************************************************
     TEST(test_size_push_pop_iqueue)
     {
       etl::queue_spsc_atomic<int, 4> queue;

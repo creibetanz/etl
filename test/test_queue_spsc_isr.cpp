@@ -69,6 +69,52 @@ namespace
   bool Access::called_lock;
   bool Access::called_unlock;
 
+  struct Item
+  {
+    Item()
+      : c(0),
+        i(0),
+        d(0.0)
+    {
+    }
+
+    Item(char c_, int i_, double d_)
+      : c(c_),
+      i(i_),
+      d(d_)
+    {
+    }
+
+    char c;
+    int i;
+    double d;
+  };
+
+  bool operator == (const Item& lhs, const Item& rhs)
+  {
+    return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
+  }
+
+  struct ItemNTD
+  {
+    ItemNTD()
+    {
+      p = new char;
+    }
+
+    ItemNTD(const ItemNTD&)
+      : p(new char)
+    {
+    }
+
+    ~ItemNTD()
+    {
+      delete p;
+    }
+
+    char* p;
+  };
+
   SUITE(test_queue_isr)
   {
     //*************************************************************************
@@ -91,6 +137,232 @@ namespace
       Access::clear();
 
       etl::queue_spsc_isr<int, 4, Access> queue;
+
+      CHECK_EQUAL(0U, queue.size_from_isr());
+
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+
+      Access::clear();
+
+      CHECK_EQUAL(4U, queue.available_from_isr());
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+
+      Access::clear();
+
+      CHECK_EQUAL(0U, queue.size());
+
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+
+      Access::clear();
+
+      CHECK_EQUAL(4U, queue.available());
+
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+
+      Access::clear();
+
+      queue.push_from_isr(1);
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+      CHECK_EQUAL(1U, queue.size_from_isr());
+      CHECK_EQUAL(3U, queue.available_from_isr());
+
+      Access::clear();
+
+      queue.push(2);
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+      CHECK_EQUAL(2U, queue.size_from_isr());
+      CHECK_EQUAL(2U, queue.available_from_isr());
+
+      Access::clear();
+
+      queue.push(3);
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+      CHECK_EQUAL(3U, queue.size_from_isr());
+      CHECK_EQUAL(1U, queue.available_from_isr());
+
+      Access::clear();
+
+      queue.push(4);
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+      CHECK_EQUAL(4U, queue.size_from_isr());
+      CHECK_EQUAL(0U, queue.available_from_isr());
+
+      Access::clear();
+
+      CHECK(!queue.push(5));
+      CHECK(!queue.push_from_isr(5));
+
+      Access::clear();
+
+      int i;
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(1, i);
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+      CHECK_EQUAL(3U, queue.size_from_isr());
+
+      Access::clear();
+
+      CHECK(queue.pop_from_isr(i));
+      CHECK_EQUAL(2, i);
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+      CHECK_EQUAL(2U, queue.size_from_isr());
+
+      Access::clear();
+
+      CHECK(queue.pop_from_isr(i));
+      CHECK_EQUAL(3, i);
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+      CHECK_EQUAL(1U, queue.size_from_isr());
+
+      Access::clear();
+
+      CHECK(queue.pop_from_isr(i));
+      CHECK_EQUAL(4, i);
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+      CHECK_EQUAL(0U, queue.size_from_isr());
+
+      Access::clear();
+
+      CHECK(!queue.pop(i));
+      CHECK(!queue.pop_from_isr(i));
+    }
+
+    //*************************************************************************
+    TEST(test_size_push_pop_memory_model_small)
+    {
+      typedef etl::queue_spsc_isr<int, 4, Access, etl::memory_model::SMALL>::size_type queue_size_type;
+      bool is_same = std::is_same<uint8_t, queue_size_type>::value;
+      CHECK(is_same);
+
+      Access::clear();
+
+      etl::queue_spsc_isr<int, 4, Access, etl::memory_model::SMALL> queue;
+
+      CHECK_EQUAL(0U, queue.size_from_isr());
+
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+
+      Access::clear();
+
+      CHECK_EQUAL(4U, queue.available_from_isr());
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+
+      Access::clear();
+
+      CHECK_EQUAL(0U, queue.size());
+
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+
+      Access::clear();
+
+      CHECK_EQUAL(4U, queue.available());
+
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+
+      Access::clear();
+
+      queue.push_from_isr(1);
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+      CHECK_EQUAL(1U, queue.size_from_isr());
+      CHECK_EQUAL(3U, queue.available_from_isr());
+
+      Access::clear();
+
+      queue.push(2);
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+      CHECK_EQUAL(2U, queue.size_from_isr());
+      CHECK_EQUAL(2U, queue.available_from_isr());
+
+      Access::clear();
+
+      queue.push(3);
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+      CHECK_EQUAL(3U, queue.size_from_isr());
+      CHECK_EQUAL(1U, queue.available_from_isr());
+
+      Access::clear();
+
+      queue.push(4);
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+      CHECK_EQUAL(4U, queue.size_from_isr());
+      CHECK_EQUAL(0U, queue.available_from_isr());
+
+      Access::clear();
+
+      CHECK(!queue.push(5));
+      CHECK(!queue.push_from_isr(5));
+
+      Access::clear();
+
+      int i;
+
+      CHECK(queue.pop(i));
+      CHECK_EQUAL(1, i);
+      CHECK(Access::called_lock);
+      CHECK(Access::called_unlock);
+      CHECK_EQUAL(3U, queue.size_from_isr());
+
+      Access::clear();
+
+      CHECK(queue.pop_from_isr(i));
+      CHECK_EQUAL(2, i);
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+      CHECK_EQUAL(2U, queue.size_from_isr());
+
+      Access::clear();
+
+      CHECK(queue.pop_from_isr(i));
+      CHECK_EQUAL(3, i);
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+      CHECK_EQUAL(1U, queue.size_from_isr());
+
+      Access::clear();
+
+      CHECK(queue.pop_from_isr(i));
+      CHECK_EQUAL(4, i);
+      CHECK(!Access::called_lock);
+      CHECK(!Access::called_unlock);
+      CHECK_EQUAL(0U, queue.size_from_isr());
+
+      Access::clear();
+
+      CHECK(!queue.pop(i));
+      CHECK(!queue.pop_from_isr(i));
+    }
+
+    //*************************************************************************
+    TEST(test_size_push_pop_memory_model_medium)
+    {
+      typedef etl::queue_spsc_isr<int, 4, Access, etl::memory_model::MEDIUM>::size_type queue_size_type;
+      bool is_same = std::is_same<uint16_t, queue_size_type>::value;
+      CHECK(is_same);
+
+      Access::clear();
+
+      etl::queue_spsc_isr<int, 4, Access, etl::memory_model::MEDIUM> queue;
 
       CHECK_EQUAL(0U, queue.size_from_isr());
 
@@ -372,6 +644,28 @@ namespace
 
       CHECK(!queue.pop());
       CHECK(!queue.pop_from_isr());
+    }
+
+    //*************************************************************************
+    TEST(test_multiple_emplace)
+    {
+      etl::queue_spsc_isr<Item, 4, Access> queue;
+
+      queue.emplace('a', 1, 1.2);
+      queue.emplace('b', 2, 3.4);
+      queue.emplace('c', 3, 5.6);
+      queue.emplace('d', 4, 7.8);
+
+      Item i;
+
+      queue.pop(i);
+      CHECK(i == Item('a', 1, 1.2));
+      queue.pop(i);
+      CHECK(i == Item('b', 2, 3.4));
+      queue.pop(i);
+      CHECK(i == Item('c', 3, 5.6));
+      queue.pop(i);
+      CHECK(i == Item('d', 4, 7.8));
     }
 
     //*************************************************************************

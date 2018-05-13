@@ -37,15 +37,27 @@ SOFTWARE.
 #include "platform.h"
 #include "alignment.h"
 #include "parameter_type.h"
+#include "type_select.h"
+#include "memory_model.h"
 
 #undef ETL_FILE
 #define ETL_FILE "46"
 
+#define ETL_QUEUE_SPSC_ISR_CPP03_CODE 0
+
 namespace etl
 {
-  template <typename T>
+  //***************************************************************************
+  /// Queue size_type lookup from memory model.
+  ///\ingroup queue
+  //***************************************************************************
+  typedef etl::type_select<uint_least8_t, uint_least16_t, uint_least32_t> queue_spsc_isr_size_type;
+
+  template <typename T, size_t MEMORY_MODEL>
   class queue_spsc_isr_base
   {
+    STATIC_ASSERT((MEMORY_MODEL == etl::memory_model::SMALL) || (MEMORY_MODEL == etl::memory_model::MEDIUM) || (MEMORY_MODEL == etl::memory_model::LARGE), "Invalid memory model");
+
   protected:
 
     typedef typename etl::parameter_type<T>::type parameter_t;
@@ -55,7 +67,9 @@ namespace etl
     typedef T        value_type;      ///< The type stored in the queue.
     typedef T&       reference;       ///< A reference to the type used in the queue.
     typedef const T& const_reference; ///< A const reference to the type used in the queue.
-    typedef size_t   size_type;       ///< The type used for determining the size of the queue.
+
+    /// The type used for determining the size of queue.
+    typedef typename queue_spsc_isr_size_type::select<MEMORY_MODEL>::type size_type;
 
     //*************************************************************************
     /// Push a value to the queue from an ISR.
@@ -85,7 +99,7 @@ namespace etl
     /// How much free space available in the queue.
     /// Called from ISR.
     //*************************************************************************
-    size_t available_from_isr() const
+    size_type available_from_isr() const
     {
       return MAX_SIZE - current_size;
     }
@@ -123,7 +137,7 @@ namespace etl
     /// How many items in the queue?
     /// Called from ISR.
     //*************************************************************************
-    size_t size_from_isr() const
+    size_type size_from_isr() const
     {
       return current_size;
     }
@@ -131,7 +145,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    size_t capacity() const
+    size_type capacity() const
     {
       return MAX_SIZE;
     }
@@ -139,7 +153,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    size_t max_size() const
+    size_type max_size() const
     {
       return MAX_SIZE;
     }
@@ -174,6 +188,113 @@ namespace etl
       // Queue is full.
       return false;
     }
+
+#if !ETL_CPP11_SUPPORTED || ETL_QUEUE_SPSC_ISR_CPP03_CODE
+    //*************************************************************************
+    /// Emplace a value to the queue.
+    //*************************************************************************
+    template <typename T1>
+    bool emplace_implementation(const T1& value1)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(value1);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Emplace a value to the queue.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    bool emplace_implementation(const T1& value1, const T2& value2)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(value1, value2);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Emplace a value to the queue.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    bool emplace_implementation(const T1& value1, const T2& value2, const T3& value3)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(value1, value2, value3);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Emplace a value to the queue.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    bool emplace_implementation(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(value1, value2, value3, value4);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+#else
+    //*************************************************************************
+    /// Emplace a value to the queue.
+    //*************************************************************************
+    template <typename... Args>
+    bool emplace_implementation(Args&&... args)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(std::forward<Args>(args)...);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+#endif
 
     //*************************************************************************
     /// Pop a value from the queue.
@@ -219,7 +340,7 @@ namespace etl
     //*************************************************************************
     /// Calculate the next index.
     //*************************************************************************
-    static size_t get_next_index(size_t index, size_t maximum)
+    static size_type get_next_index(size_type index, size_type maximum)
     {
       ++index;
 
@@ -266,19 +387,21 @@ namespace etl
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_spsc_isr holds.
   //***************************************************************************
-  template <typename T, typename TAccess>
-  class iqueue_spsc_isr : public queue_spsc_isr_base<T>
+  template <typename T, typename TAccess, size_t MEMORY_MODEL = etl::memory_model::LARGE>
+  class iqueue_spsc_isr : public queue_spsc_isr_base<T, MEMORY_MODEL>
   {
   private:
 
-    typedef typename queue_spsc_isr_base<T>::parameter_t parameter_t;
+    typedef etl::queue_spsc_isr_base<T, MEMORY_MODEL> base_t;
+
+    typedef typename etl::queue_spsc_isr_base<T, MEMORY_MODEL>::parameter_t parameter_t;
 
   public:
 
-    typedef typename queue_spsc_isr_base<T>::value_type      value_type;      ///< The type stored in the queue.
-    typedef typename queue_spsc_isr_base<T>::reference       reference;       ///< A reference to the type used in the queue.
-    typedef typename queue_spsc_isr_base<T>::const_reference const_reference; ///< A const reference to the type used in the queue.
-    typedef typename queue_spsc_isr_base<T>::size_type       size_type;       ///< The type used for determining the size of the queue.
+    typedef typename base_t::value_type      value_type;      ///< The type stored in the queue.
+    typedef typename base_t::reference       reference;       ///< A reference to the type used in the queue.
+    typedef typename base_t::const_reference const_reference; ///< A const reference to the type used in the queue.
+    typedef typename base_t::size_type       size_type;       ///< The type used for determining the size of the queue.
 
     //*************************************************************************
     /// Push a value to the queue.
@@ -293,6 +416,83 @@ namespace etl
 
       return result;
     }
+
+#if !ETL_CPP11_SUPPORTED || ETL_QUEUE_SPSC_ISR_CPP03_CODE
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1>
+    bool emplace(const T1& value1)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(value1);
+
+      TAccess::unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    bool emplace(const T1& value1, const T2& value2)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(value1, value2);
+
+      TAccess::unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    bool emplace(const T1& value1, const T2& value2, const T3& value3)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(value1, value2, value3);
+
+      TAccess::unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(value1, value2, value3, value4);
+
+      TAccess::unlock();
+
+      return result;
+    }
+#else
+    //*************************************************************************
+    /// Emplace with variadic constructor parameters.
+    //*************************************************************************
+    template <typename... Args>
+    bool emplace(Args&&... args)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(std::forward<Args>(args)...);
+
+      TAccess::unlock();
+
+      return result;
+    }
+#endif
 
     //*************************************************************************
     /// Pop a value from the queue.
@@ -344,7 +544,7 @@ namespace etl
     {
       TAccess::lock();
 
-      size_t result = (this->current_size == 0);
+      bool result = (this->current_size == 0);
 
       TAccess::unlock();
 
@@ -358,7 +558,7 @@ namespace etl
     {
       TAccess::lock();
 
-      size_t result = (this->current_size == this->MAX_SIZE);
+      bool result = (this->current_size == this->MAX_SIZE);
 
       TAccess::unlock();
 
@@ -368,11 +568,11 @@ namespace etl
     //*************************************************************************
     /// How many items in the queue?
     //*************************************************************************
-    size_t size() const
+    size_type size() const
     {
       TAccess::lock();
 
-      size_t result = this->current_size;
+      bool result = this->current_size;
 
       TAccess::unlock();
 
@@ -382,11 +582,11 @@ namespace etl
     //*************************************************************************
     /// How much free space available in the queue.
     //*************************************************************************
-    size_t available() const
+    size_type available() const
     {
       TAccess::lock();
 
-      size_t result = this->MAX_SIZE - this->current_size;
+      size_type result = this->MAX_SIZE - this->current_size;
 
       TAccess::unlock();
 
@@ -399,7 +599,7 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue_spsc_isr(T* p_buffer_, size_type max_size_)
-      : queue_spsc_isr_base<T>(p_buffer_, max_size_)
+      : queue_spsc_isr_base<T, MEMORY_MODEL>(p_buffer_, max_size_)
     {
     }
 
@@ -416,14 +616,15 @@ namespace etl
   ///\ingroup queue_spsc
   /// A fixed capacity spsc queue.
   /// This queue supports concurrent access by one producer and one consumer.
-  /// \tparam T       The type this queue should support.
-  /// \tparam SIZE    The maximum capacity of the queue.
-  /// \tparam TAccess The type that will lock and unlock interrupts.
+  /// \tparam T            The type this queue should support.
+  /// \tparam SIZE         The maximum capacity of the queue.
+  /// \tparam TAccess      The type that will lock and unlock interrupts.
+  /// \tparam MEMORY_MODEL The memory model for this queue. Default = etl::memory_model::LARGE
   //***************************************************************************
-  template <typename T, size_t SIZE, typename TAccess>
-  class queue_spsc_isr : public etl::iqueue_spsc_isr<T, TAccess>
+  template <typename T, size_t SIZE, typename TAccess, size_t MEMORY_MODEL = etl::memory_model::LARGE>
+  class queue_spsc_isr : public etl::iqueue_spsc_isr<T, TAccess, MEMORY_MODEL>
   {
-    typedef etl::iqueue_spsc_isr<T, TAccess> base_t;
+    typedef etl::iqueue_spsc_isr<T, TAccess, MEMORY_MODEL> base_t;
 
   public:
 
