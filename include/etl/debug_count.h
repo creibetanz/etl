@@ -122,7 +122,7 @@ namespace etl
 
     int32_t count;
   };
-
+}
 #else
 #define ETL_DECLARE_DEBUG_COUNT
 #define ETL_INCREMENT_DEBUG_COUNT
@@ -131,7 +131,6 @@ namespace etl
 #define ETL_SUBTRACT_DEBUG_COUNT(n)
 #define ETL_RESET_DEBUG_COUNT
 #endif // ETL_DEBUG_COUNT
-}
 
 #endif
 
