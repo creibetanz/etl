@@ -93,6 +93,7 @@ namespace
       CHECK(text.empty());
       CHECK_EQUAL(text.capacity(), SIZE);
       CHECK_EQUAL(text.max_size(), SIZE);
+      CHECK(text.begin() == text.end());
     }
 
     //*************************************************************************

@@ -184,6 +184,7 @@ namespace
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), MAX_SIZE);
       CHECK_EQUAL(data.max_size(), MAX_SIZE);
+      CHECK(data.begin() == data.end());
     }
 
     //*************************************************************************
