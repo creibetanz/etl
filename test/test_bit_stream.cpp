@@ -489,5 +489,29 @@ namespace
       CHECK(bit_stream.get(get_data[3], 5));
       CHECK_EQUAL((int)expect_data[3], (int)get_data[3]);
     }
+
+    //*************************************************************************
+    TEST(put_get_int16_t)
+    {
+      std::array<unsigned char, 4> storage;
+      std::array<int16_t, 4> put_data = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
+      std::array<int16_t, 4> get_data = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0]);
+      bit_stream.put(put_data[1]);
+      bit_stream.put(put_data[2]);
+      bit_stream.put(put_data[3]);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0]));
+      CHECK(bit_stream.get(get_data[1]));
+      CHECK(bit_stream.get(get_data[2]));
+      CHECK(bit_stream.get(get_data[3]));
+    }
   };
 }
