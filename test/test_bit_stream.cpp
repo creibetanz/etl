@@ -437,7 +437,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int8_t)
     {
-      std::array<unsigned char, 4> storage;
+      std::array<unsigned char, 4 * sizeof(int8_t)> storage;
       std::array<int8_t, 4> put_data = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
       std::array<int8_t, 4> get_data = { int8_t(0x00), int8_t(0x00), int8_t(0x00), int8_t(0x00) };
 
@@ -453,18 +453,88 @@ namespace
       bit_stream.restart();
 
       CHECK(bit_stream.get(get_data[0]));
+      CHECK_EQUAL(put_data[0], (int)get_data[0]);
+
       CHECK(bit_stream.get(get_data[1]));
+      CHECK_EQUAL(put_data[1], (int)get_data[1]);
+
       CHECK(bit_stream.get(get_data[2]));
+      CHECK_EQUAL(put_data[2], (int)get_data[2]);
+
       CHECK(bit_stream.get(get_data[3]));
+      CHECK_EQUAL(put_data[3], (int)get_data[3]);
     }
 
     //*************************************************************************
     TEST(put_get_int8_t_5bits)
     {
-      std::array<unsigned char, 4> storage;
-      std::array<int8_t, 4> put_data    = { int8_t(0x01), int8_t(0x15), int8_t(0x0A), int8_t(0x1F) }; // 1, -11, 10, -1
-      std::array<int8_t, 4> expect_data = { int8_t(0x01), int8_t(0xF5), int8_t(0x0A), int8_t(0xFF) }; // 1, -11, 10, -1
+      std::array<unsigned char, 4 * sizeof(int8_t)> storage;
+      std::array<int8_t, 4> put_data    = { int8_t(0x01), int8_t(0x15), int8_t(0xA5), int8_t(0x1F) }; // 1, -11, 10, -1
+      std::array<int8_t, 4> expect_data = { int8_t(0x01), int8_t(0xF5), int8_t(0x05), int8_t(0xFF) }; // 1, -11, 10, -1
       std::array<int8_t, 4> get_data    = { int8_t(0x00), int8_t(0x00), int8_t(0x00), int8_t(0x00) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0], 5);
+      bit_stream.put(put_data[1], 5);
+      bit_stream.put(put_data[2], 5);
+      bit_stream.put(put_data[3], 5);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0], 5));
+      CHECK_EQUAL((int)expect_data[0], (int)get_data[0]);
+
+      CHECK(bit_stream.get(get_data[1], 5));
+      CHECK_EQUAL((int)expect_data[1], (int)get_data[1]);
+
+      CHECK(bit_stream.get(get_data[2], 5));
+      CHECK_EQUAL((int)expect_data[2], (int)get_data[2]);
+
+      CHECK(bit_stream.get(get_data[3], 5));
+      CHECK_EQUAL((int)expect_data[3], (int)get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_uint8_t)
+    {
+      std::array<unsigned char, 4 * sizeof(uint8_t)> storage;
+      std::array<uint8_t, 4> put_data = { uint8_t(0x01), uint8_t(0x5A), uint8_t(0xA5), uint8_t(0xFF) };
+      std::array<uint8_t, 4> get_data = { uint8_t(0x00), uint8_t(0x00), uint8_t(0x00), uint8_t(0x00) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0]);
+      bit_stream.put(put_data[1]);
+      bit_stream.put(put_data[2]);
+      bit_stream.put(put_data[3]);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0]));
+      CHECK_EQUAL(put_data[0], (int)get_data[0]);
+
+      CHECK(bit_stream.get(get_data[1]));
+      CHECK_EQUAL(put_data[1], (int)get_data[1]);
+
+      CHECK(bit_stream.get(get_data[2]));
+      CHECK_EQUAL(put_data[2], (int)get_data[2]);
+
+      CHECK(bit_stream.get(get_data[3]));
+      CHECK_EQUAL(put_data[3], (int)get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_uint8_t_5bits)
+    {
+      std::array<unsigned char, 4 * sizeof(uint8_t)> storage;
+      std::array<uint8_t, 4> put_data    = { uint8_t(0x01), uint8_t(0x5A), uint8_t(0xA5), uint8_t(0xFF) }; // 1, -11, 10, -1
+      std::array<uint8_t, 4> expect_data = { uint8_t(0x01), uint8_t(0x1A), uint8_t(0x05), uint8_t(0x1F) }; // 1, -11, 10, -1
+      std::array<uint8_t, 4> get_data    = { uint8_t(0x00), uint8_t(0x00), uint8_t(0x00), uint8_t(0x00) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
       bit_stream.clear();
@@ -493,7 +563,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int16_t)
     {
-      std::array<unsigned char, 4> storage;
+      std::array<unsigned char, 4 * sizeof(int16_t)> storage;
       std::array<int16_t, 4> put_data = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
       std::array<int16_t, 4> get_data = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
 
@@ -509,9 +579,237 @@ namespace
       bit_stream.restart();
 
       CHECK(bit_stream.get(get_data[0]));
+      CHECK_EQUAL(put_data[0], get_data[0]);
+
       CHECK(bit_stream.get(get_data[1]));
+      CHECK_EQUAL(put_data[1], get_data[1]);
+
       CHECK(bit_stream.get(get_data[2]));
+      CHECK_EQUAL(put_data[2], get_data[2]);
+
       CHECK(bit_stream.get(get_data[3]));
+      CHECK_EQUAL(put_data[3], get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_int16_t_10bits)
+    {
+      std::array<unsigned char, 4 * sizeof(int16_t)> storage;
+      std::array<int16_t, 4> put_data    = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
+      std::array<int16_t, 4> expect_data = { int16_t(0x0001), int16_t(0x015A), int16_t(0xFEA5), int16_t(0xFFFF) };
+      std::array<int16_t, 4> get_data    = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0], 10);
+      bit_stream.put(put_data[1], 10);
+      bit_stream.put(put_data[2], 10);
+      bit_stream.put(put_data[3], 10);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0], 10));
+      CHECK_EQUAL(expect_data[0], get_data[0]);
+
+      CHECK(bit_stream.get(get_data[1], 10));
+      CHECK_EQUAL(expect_data[1], get_data[1]);
+
+      CHECK(bit_stream.get(get_data[2], 10));
+      CHECK_EQUAL(expect_data[2], get_data[2]);
+
+      CHECK(bit_stream.get(get_data[3], 10));
+      CHECK_EQUAL(expect_data[3], get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_uint16_t)
+    {
+      std::array<unsigned char, 4 * sizeof(uint16_t)> storage;
+      std::array<uint16_t, 4> put_data = { uint16_t(0x0001), uint16_t(0xA55A), uint16_t(0x5AA5), uint16_t(0xFFFF) };
+      std::array<uint16_t, 4> get_data = { uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0]);
+      bit_stream.put(put_data[1]);
+      bit_stream.put(put_data[2]);
+      bit_stream.put(put_data[3]);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0]));
+      CHECK_EQUAL(put_data[0], get_data[0]);
+
+      CHECK(bit_stream.get(get_data[1]));
+      CHECK_EQUAL(put_data[1], get_data[1]);
+
+      CHECK(bit_stream.get(get_data[2]));
+      CHECK_EQUAL(put_data[2], get_data[2]);
+
+      CHECK(bit_stream.get(get_data[3]));
+      CHECK_EQUAL(put_data[3], get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_uint16_t_10bits)
+    {
+      std::array<unsigned char, 4 * sizeof(uint16_t)> storage;
+      std::array<uint16_t, 4> put_data    = { uint16_t(0x0001), uint16_t(0xA55A), uint16_t(0x5AA5), uint16_t(0xFFFF) };
+      std::array<uint16_t, 4> expect_data = { uint16_t(0x0001), uint16_t(0x015A), uint16_t(0x02A5), uint16_t(0x03FF) };
+      std::array<uint16_t, 4> get_data    = { uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0], 10);
+      bit_stream.put(put_data[1], 10);
+      bit_stream.put(put_data[2], 10);
+      bit_stream.put(put_data[3], 10);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0], 10));
+      CHECK_EQUAL(expect_data[0], get_data[0]);
+
+      CHECK(bit_stream.get(get_data[1], 10));
+      CHECK_EQUAL(expect_data[1], get_data[1]);
+
+      CHECK(bit_stream.get(get_data[2], 10));
+      CHECK_EQUAL(expect_data[2], get_data[2]);
+
+      CHECK(bit_stream.get(get_data[3], 10));
+      CHECK_EQUAL(expect_data[3], get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_int32_t)
+    {
+      std::array<unsigned char, 4 * sizeof(int32_t)> storage;
+      std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
+      std::array<int32_t, 4> get_data = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0]);
+      bit_stream.put(put_data[1]);
+      bit_stream.put(put_data[2]);
+      bit_stream.put(put_data[3]);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0]));
+      CHECK_EQUAL(put_data[0], get_data[0]);
+
+      CHECK(bit_stream.get(get_data[1]));
+      CHECK_EQUAL(put_data[1], get_data[1]);
+
+      CHECK(bit_stream.get(get_data[2]));
+      CHECK_EQUAL(put_data[2], get_data[2]);
+
+      CHECK(bit_stream.get(get_data[3]));
+      CHECK_EQUAL(put_data[3], get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_int32_t_22bits)
+    {
+      std::array<unsigned char, 4 * sizeof(int32_t)> storage;
+      std::array<int32_t, 4> put_data    = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
+      std::array<int32_t, 4> expect_data = { int32_t(0x00000001), int32_t(0x001AA55A), int32_t(0xFFE55AA5), int32_t(0xFFFFFFFF) };
+      std::array<int32_t, 4> get_data    = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0], 22);
+      bit_stream.put(put_data[1], 22);
+      bit_stream.put(put_data[2], 22);
+      bit_stream.put(put_data[3], 22);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0], 22));
+      CHECK_EQUAL(expect_data[0], get_data[0]);
+
+      CHECK(bit_stream.get(get_data[1], 22));
+      CHECK_EQUAL(expect_data[1], get_data[1]);
+
+      CHECK(bit_stream.get(get_data[2], 22));
+      CHECK_EQUAL(expect_data[2], get_data[2]);
+
+      CHECK(bit_stream.get(get_data[3], 22));
+      CHECK_EQUAL(expect_data[3], get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_uint32_t)
+    {
+      std::array<unsigned char, 4 * sizeof(uint32_t)> storage;
+      std::array<uint32_t, 4> put_data = { uint32_t(0x00000001), uint32_t(0xA55AA55A), uint32_t(0x5AA55AA5), uint32_t(0xFFFFFFFF) };
+      std::array<uint32_t, 4> get_data = { uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0]);
+      bit_stream.put(put_data[1]);
+      bit_stream.put(put_data[2]);
+      bit_stream.put(put_data[3]);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0]));
+      CHECK_EQUAL(put_data[0], get_data[0]);
+
+      CHECK(bit_stream.get(get_data[1]));
+      CHECK_EQUAL(put_data[1], get_data[1]);
+
+      CHECK(bit_stream.get(get_data[2]));
+      CHECK_EQUAL(put_data[2], get_data[2]);
+
+      CHECK(bit_stream.get(get_data[3]));
+      CHECK_EQUAL(put_data[3], get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_uint32_t_22bits)
+    {
+      std::array<unsigned char, 4 * sizeof(uint32_t)> storage;
+      std::array<uint32_t, 4> put_data    = { uint32_t(0x00000001), uint32_t(0xA55AA55A), uint32_t(0x5AA55AA5), uint32_t(0xFFFFFFFF) };
+      std::array<uint32_t, 4> expect_data = { uint32_t(0x00000001), uint32_t(0x001AA55A), uint32_t(0x00255AA5), uint32_t(0x003FFFFF) };
+      std::array<uint32_t, 4> get_data    = { uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000) };
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+      bit_stream.clear();
+
+      // Insert into the stream
+      bit_stream.put(put_data[0], 22);
+      bit_stream.put(put_data[1], 22);
+      bit_stream.put(put_data[2], 22);
+      bit_stream.put(put_data[3], 22);
+
+      bit_stream.restart();
+
+      CHECK(bit_stream.get(get_data[0], 22));
+      CHECK_EQUAL(expect_data[0], get_data[0]);
+
+      CHECK(bit_stream.get(get_data[1], 22));
+      CHECK_EQUAL(expect_data[1], get_data[1]);
+
+      CHECK(bit_stream.get(get_data[2], 22));
+      CHECK_EQUAL(expect_data[2], get_data[2]);
+
+      CHECK(bit_stream.get(get_data[3], 22));
+      CHECK_EQUAL(expect_data[3], get_data[3]);
     }
   };
 }

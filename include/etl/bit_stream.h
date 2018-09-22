@@ -182,7 +182,8 @@ namespace etl
       // Sign extend if signed type and not already full bit width.
       if (etl::is_signed<T>::value && (bits != (CHAR_BIT * sizeof(T))))
       {
-        value = etl::sign_extend<T, T>(value, bits);
+        typedef typename etl::make_signed<T>::type ST;
+        value = etl::sign_extend<ST, ST>(value, bits);
       }
 
       return success;
