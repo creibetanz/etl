@@ -59,7 +59,8 @@ SOFTWARE.
 #endif
 
 #ifdef ETL_COMPILER_GCC
-  #pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 //*****************************************************************************
@@ -395,19 +396,6 @@ namespace etl
     void clear()
     {
       initialise();
-    }
-
-    //*************************************************************************
-    /// Increases the size of the vector by one, but does not initialise the new element.
-    /// If asserts or exceptions are enabled, throws a vector_full if the vector is already full.
-    //*************************************************************************
-    void push_back()
-    {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
-
-      create_back();
     }
 
     //*********************************************************************
@@ -1235,5 +1223,9 @@ namespace etl
 }
 
 #include "private/ivectorpointer.h"
+
+#ifdef ETL_COMPILER_GCC
+#pragma GCC diagnostic pop
+#endif
 
 #endif

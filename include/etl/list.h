@@ -392,8 +392,8 @@ namespace etl
     etl::ipool* p_node_pool;     ///< The pool of data nodes used in the list.
     node_t      terminal_node;   ///< The node that acts as the list start and end.
     size_type   MAX_SIZE;        ///< The maximum size of the list.
-    bool        pool_is_shared; ///< If <b>true</b> then the pool is shared between lists.
-    ETL_DECLARE_DEBUG_COUNT;     ///< Internal debugging.
+    bool        pool_is_shared;  ///< If <b>true</b> then the pool is shared between lists.
+    ETL_DECLARE_DEBUG_COUNT      ///< Internal debugging.
   };
 
   //***************************************************************************
@@ -833,14 +833,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Adds a node to the front of the list so a new value can be assigned to front().
-    //*************************************************************************
-    void push_front()
-    {
-      push_front(T());
-    }
-
-    //*************************************************************************
     /// Pushes a value to the front of the list.
     //*************************************************************************
     void push_front(parameter_t value)
@@ -929,14 +921,6 @@ namespace etl
 #endif
       node_t& node = get_head();
       remove_node(node);
-    }
-
-    //*************************************************************************
-    /// Adds a node to the back of the list so a new value can be assigned to back().
-    //*************************************************************************
-    void push_back()
-    {
-      push_back(T());
     }
 
     //*************************************************************************

@@ -29,7 +29,7 @@ SOFTWARE.
 ******************************************************************************/
 #ifndef __ETL_PROFILE_H__
 #define __ETL_PROFILE_H__
-#ifdef PROFILE_MSVC 
+#ifdef PROFILE_MSVC
   #include "msvc_x86.h"
 #elif PROFILE_GCC_GENERIC
   #include "gcc_generic.h"
@@ -51,9 +51,11 @@ SOFTWARE.
   #include "cpp11.h"
 #elif PROFILE_CPP14_GENERIC
   #include "cpp14.h"
+#elif PROFILE_CPP17_GENERIC
+  #include "cpp17.h"
 #elif PROFILE_CUSTOM
   #include "custom_profile.h"
-#else 
+#else
   #error Must provide a profile header file when buiding ETL. See https://www.etlcpp.com/setup.html
 #endif
 

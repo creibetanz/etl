@@ -704,6 +704,11 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\minmax_push.h">
       <Filter>ETL\Private</Filter>
+    <ClInclude Include="..\..\include\etl\state_chart.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_modbus.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1151,6 +1156,12 @@
     <ClCompile Include="..\test_bit_stream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_state_chart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc16_modbus.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1189,6 +1200,7 @@
     <None Include="..\..\include\etl\generate_type_select.bat">
       <Filter>Resource Files\Generators</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\include\etl\file_error_numbers.txt">

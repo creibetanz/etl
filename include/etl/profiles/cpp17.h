@@ -28,23 +28,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_VERSION_INCLUDED
-#define ETL_VERSION_INCLUDED
+#ifndef ETL_CPP17_INCLUDED
+#define ETL_CPP17_INCLUDED
 
-#include <stdint.h>
+//*****************************************************************************
+// Generic C++17
+//*****************************************************************************
 
-///\defgroup version version
-/// Definitions of the ETL version
-///\ingroup utilities
-
-#define ETL_VERSION       "12.0.1"
-#define ETL_VERSION_W     L"12.0.1"
-#define ETL_VERSION_U16   u"12.0.1"
-#define ETL_VERSION_U32   U"12.0.1"
-#define ETL_VERSION_MAJOR 12
-#define ETL_VERSION_MINOR  0
-#define ETL_VERSION_PATCH  1
-#define ETL_VERSION_VALUE ((ETL_VERSION_MAJOR * 10000) + (ETL_VERSION_MINOR * 100) + ETL_VERSION_PATCH)
+#define ETL_TARGET_DEVICE_GENERIC
+#define ETL_TARGET_OS_NONE
+#define ETL_COMPILER_GENERIC
+#define ETL_CPP11_SUPPORTED 1
+#define ETL_CPP14_SUPPORTED 1
+#define ETL_CPP17_SUPPORTED 1
+#define ETL_NO_NULLPTR_SUPPORT 0
+#define ETL_NO_LARGE_CHAR_SUPPORT 0
+#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 1
 
 #endif
-
