@@ -704,6 +704,7 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\minmax_push.h">
       <Filter>ETL\Private</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\state_chart.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
