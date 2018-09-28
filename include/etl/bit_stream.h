@@ -13,6 +13,7 @@
 #include "etl/binary.h"
 
 #include "etl/stl/algorithm.h"
+#include "etl/stl/iterator.h"
 
 #include "private/minmax_push.h"
 
@@ -27,6 +28,8 @@ namespace etl
   public:
 
     //***************************************************************************
+    /// Default constructor.
+    //***************************************************************************
     bit_stream()
       : pdata(nullptr),
         length(0U)
@@ -34,6 +37,28 @@ namespace etl
       restart();
     }
 
+    //***************************************************************************
+    /// Construct from range.
+    //***************************************************************************
+    bit_stream(char *begin_, char* end_)
+      : pdata(reinterpret_cast<unsigned char*>(begin_)),
+        length(std::distance(begin_, end_))
+    {
+      restart();
+    }
+
+    //***************************************************************************
+    /// Construct from range.
+    //***************************************************************************
+    bit_stream(unsigned char *begin_, unsigned char* end_)
+      : pdata(begin_),
+      length(std::distance(begin_, end_))
+    {
+      restart();
+    }
+
+    //***************************************************************************
+    /// Construct from begin and length.
     //***************************************************************************
     bit_stream(char *pdata_, size_t length_)
       : pdata(reinterpret_cast<unsigned char*>(pdata_)),
@@ -43,6 +68,8 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Construct from begin and length.
+    //***************************************************************************
     bit_stream(unsigned char *pdata_, size_t length_)
       : pdata(pdata_),
         length(length_)
@@ -50,6 +77,18 @@ namespace etl
       restart();
     }
 
+    //***************************************************************************
+    /// Construct from begin and length.
+    //***************************************************************************
+    void set_stream(char *pdata_, size_t length_)
+    {
+      pdata  = reinterpret_cast<unsigned char*>(pdata_);
+      length = length_;
+      restart();
+    }
+
+    //***************************************************************************
+    /// Construct from begin and length.
     //***************************************************************************
     void set_stream(unsigned char *pdata_, size_t length_)
     {
@@ -59,6 +98,24 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Construct from range.
+    //***************************************************************************
+    void set_stream(char *begin_, char* end_)
+    {
+      set_stream(begin_, std::distance(begin_, end_));
+    }
+
+    //***************************************************************************
+    /// Construct from range.
+    //***************************************************************************
+    void set_stream(unsigned char *begin_, unsigned char* end_)
+    {
+      set_stream(begin_, std::distance(begin_, end_));
+    }
+
+    //***************************************************************************
+    /// Sets the indexes back to the beginning of the stream.
+    //***************************************************************************
     void restart() const
     {
       bits_in_byte   = 8;
@@ -67,20 +124,15 @@ namespace etl
     }
 
     //***************************************************************************
-    void clear() const
-    {
-      bits_in_byte   = 8;
-      byte_index     = 0U;
-      bits_remaining = CHAR_BIT * length;
-      std::fill(pdata, pdata + length, 0U);
-    }
-
+    /// Returns <b>true</b> if the bitsteam indexes have reached the end.
     //***************************************************************************
     bool empty() const
     {
       return (bits_remaining == 0U);
     }
 
+    //***************************************************************************
+    /// Puts a boolean to the stream
     //***************************************************************************
     bool put(bool value)
     {
@@ -91,7 +143,7 @@ namespace etl
         if (bits_remaining > 0)
         {
           unsigned char chunk = value ? 1 : 0;
-          put_chunk(chunk, 1);          
+          put_integral(chunk, 1);
           success = true;
         }
       }
@@ -101,6 +153,7 @@ namespace etl
 
     //***************************************************************************
     /// For integral types
+    //***************************************************************************
     template <typename T>
     typename etl::enable_if<etl::is_integral<T>::value, bool>::type
       put(T value, uint_least8_t width = CHAR_BIT * sizeof(T))
@@ -110,18 +163,17 @@ namespace etl
 
     //***************************************************************************
     /// For floating point types
+    //***************************************************************************
     template <typename T>
     typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
       put(T value)
     {
       bool success = true;
 
-      const size_t width = (CHAR_BIT * sizeof(T));
-
       unsigned char data[sizeof(T)];
       to_bytes(value, data);
 
-      for (int i = 0; i < sizeof(T); ++i)
+      for (size_t i = 0; i < sizeof(T); ++i)
       {
         if (!put_integral(data[i], CHAR_BIT))
         {
@@ -134,6 +186,7 @@ namespace etl
 
     //***************************************************************************
     /// For bool types
+    //***************************************************************************
     bool get(bool &value)
     {
       bool success = false;
@@ -153,9 +206,10 @@ namespace etl
 
     //***************************************************************************
     /// For integral types
+    //***************************************************************************
     template <typename T>
     typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-      get(T &value, uint_least8_t width  = CHAR_BIT * sizeof(T)) const
+      get(T &value, uint_least8_t width = CHAR_BIT * sizeof(T)) const
     {
       bool success = false;
       uint_least8_t bits = width;
@@ -165,6 +219,8 @@ namespace etl
         // Do we have enough bits?
         if (bits_remaining >= width)
         {
+          value = 0;
+
           // Get the bits from the stream.
           while (width != 0)
           {
@@ -191,6 +247,7 @@ namespace etl
 
     //***************************************************************************
     /// For floating point types
+    //***************************************************************************
     template <typename T>
     typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
       get(T& value) const
@@ -199,13 +256,24 @@ namespace etl
 
       if (pdata != nullptr)
       {
-        // Do we have enough bits?
-        if (bits_remaining >= floating_point_bits<T>::value)
-        {
-          //unsigned char data[sizeof(T)];
+        uint_least8_t width = CHAR_BIT * sizeof(T);
 
-          //bits_remaining -= floating_point_bits<T>::value;
-          //success = true;
+        // Do we have enough bits?
+        if (bits_remaining >= width)
+        {
+          // Temporary storage.
+          unsigned char data[sizeof(T)];
+
+          for (size_t i = 0; i < sizeof(T); ++i)
+          {
+             get(data[i], CHAR_BIT);
+          }
+
+          from_bytes(data, value);
+
+          bits_remaining -= width;
+
+          success = true;
         }
       }
 
@@ -213,9 +281,10 @@ namespace etl
     }
 
   private:
-    
+
     //***************************************************************************
     /// For unsigned integral types
+    //***************************************************************************
     bool put_integral(uint32_t value, uint_least8_t width)
     {
       bool success = false;
@@ -229,26 +298,12 @@ namespace etl
           while (width != 0)
           {
             unsigned char mask_width = static_cast<unsigned char>(std::min(width, bits_in_byte));
-
             width -= mask_width;
-
-            uint32_t mask;
-                       
-            if (mask_width == CHAR_BIT * sizeof(uint32_t))
-            {
-              mask = etl::integral_limits<uint32_t>::max;
-            }
-            else
-            {              
-              mask = (1U << mask_width) - 1;
-              mask <<= width;
-            }           
-
-            uint32_t chunk = value;
+            uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << width;
 
             // Move chunk to lowest char bits.
             // Chunks are never larger than one char.
-            chunk = (value & mask) >> width;
+            uint32_t chunk = ((value & mask) >> width) << (bits_in_byte - mask_width);
 
             put_chunk(static_cast<unsigned char>(chunk), mask_width);
           }
@@ -262,20 +317,24 @@ namespace etl
 
     //***************************************************************************
     /// Put a data chunk to the stream
+    //***************************************************************************
     void put_chunk(unsigned char chunk, unsigned char width)
-    {  
-      // Move chunk to correct insertion position.
-      chunk <<= (bits_in_byte - width);
+    {
+      // Clear if new byte.
+      if (bits_in_byte == 8)
+      {
+        pdata[byte_index] = 0U;
+      }
 
       pdata[byte_index] |= chunk;
-
       step(width);
     }
 
     //***************************************************************************
     /// Get a data chunk from the stream
+    //***************************************************************************
     unsigned char get_chunk(unsigned char width) const
-    {  
+    {
       unsigned char value = pdata[byte_index];
 
       value >>= (bits_in_byte - width);
@@ -287,9 +346,9 @@ namespace etl
         mask = etl::integral_limits<unsigned char>::max;
       }
       else
-      {              
+      {
         mask = (1U << width) - 1;
-      }  
+      }
 
       value &= mask;
 
@@ -300,6 +359,7 @@ namespace etl
 
     //***************************************************************************
     /// Get a bool from the stream
+    //***************************************************************************
     bool get_bit() const
     {
       bool result = (pdata[byte_index] & (1 << (bits_in_byte - 1))) != 0;
@@ -310,9 +370,10 @@ namespace etl
     }
 
     //***************************************************************************
-    /// For floating point types
+    /// Helper function for floating point types
+    //***************************************************************************
     template <typename T>
-    void from_bytes(const unsigned char* data, T& value)
+    void from_bytes(const unsigned char* data, T& value) const
     {
       unsigned char temp[sizeof(T)];
 
@@ -332,7 +393,8 @@ namespace etl
     }
 
     //***************************************************************************
-    /// For floating point types
+    /// Helper function for floating point types
+    //***************************************************************************
     template <typename T>
     void to_bytes(T value, unsigned char* data)
     {
@@ -352,7 +414,9 @@ namespace etl
     }
 
     //***************************************************************************
-    // Step the specified number of bits along the stream
+    /// Step the specified number of bits along the stream.
+    /// The width will never be larger than 'bits_in_byte'.
+    //***************************************************************************
     void step(unsigned char width) const
     {
       bits_in_byte -= width;
@@ -366,11 +430,11 @@ namespace etl
       bits_remaining -= width;
     }
 
-    unsigned char         *pdata;
-    size_t                length;
-    mutable unsigned char bits_in_byte;
-    mutable size_t        byte_index;
-    mutable size_t        bits_remaining;
+    unsigned char         *pdata;         ///< The start of the bitstream buffer.
+    size_t                length;         ///< The length, in unsigned char, of the bitstream buffer.
+    mutable unsigned char bits_in_byte;   ///< The number of available bits in the current char.
+    mutable size_t        byte_index;     ///< The index of the char in the bitstream buffer.
+    mutable size_t        bits_remaining; ///< The number of bits still available in the bitstream buffer.
   };
 }
 

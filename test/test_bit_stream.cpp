@@ -42,9 +42,8 @@ namespace
     {
       unsigned char storage = 0;
       unsigned char compare_data = 0x5A;
-      
+
       etl::bit_stream bit_stream(&storage, 1);
-      bit_stream.clear();
 
       CHECK(bit_stream.put(false));
       CHECK(bit_stream.put(true));
@@ -70,7 +69,6 @@ namespace
       std::iota(compare_data.begin(), compare_data.end(), 0);
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       for (size_t i = 0; i < 256; ++i)
       {
@@ -95,7 +93,6 @@ namespace
       std::iota(compare_data.begin(), compare_data.end(), 0);
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       for (size_t i = 0; i < 256; ++i)
       {
@@ -121,7 +118,6 @@ namespace
       CHECK(compare_data.size() == storage.size());
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       CHECK(bit_stream.put(int16_t(0x0001)));
       CHECK(bit_stream.put(int16_t(0x5AA5)));
@@ -147,7 +143,6 @@ namespace
       CHECK(compare_data.size() == storage.size());
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       CHECK(bit_stream.put(uint16_t(0x0001)));
       CHECK(bit_stream.put(uint16_t(0x5AA5)));
@@ -168,7 +163,7 @@ namespace
     {
       // Tests assume big endian.
       std::array<unsigned char, sizeof(int32_t) * 4> storage;
-      std::array<unsigned char, sizeof(int32_t) * 4> compare_data = { 0x00, 0x00, 0x00, 0x01, 
+      std::array<unsigned char, sizeof(int32_t) * 4> compare_data = { 0x00, 0x00, 0x00, 0x01,
                                                                       0x5A, 0xA5, 0xA5, 0x5A,
                                                                       0xA5, 0x5A, 0x5A, 0xA5,
                                                                       0xFF, 0xFF, 0xFF, 0xFF };
@@ -176,7 +171,6 @@ namespace
       CHECK(compare_data.size() == storage.size());
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       CHECK(bit_stream.put(int32_t(0x00000001)));
       CHECK(bit_stream.put(int32_t(0x5AA5A55A)));
@@ -197,7 +191,7 @@ namespace
     {
       // Tests assume big endian.
       std::array<unsigned char, sizeof(uint32_t) * 4> storage;
-      std::array<unsigned char, sizeof(uint32_t) * 4> compare_data = { 0x00, 0x00, 0x00, 0x01, 
+      std::array<unsigned char, sizeof(uint32_t) * 4> compare_data = { 0x00, 0x00, 0x00, 0x01,
                                                                        0x5A, 0xA5, 0xA5, 0x5A,
                                                                        0xA5, 0x5A, 0x5A, 0xA5,
                                                                        0xFF, 0xFF, 0xFF, 0xFF };
@@ -205,7 +199,6 @@ namespace
       CHECK(compare_data.size() == storage.size());
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       CHECK(bit_stream.put(uint32_t(0x00000001)));
       CHECK(bit_stream.put(uint32_t(0x5AA5A55A)));
@@ -228,7 +221,6 @@ namespace
       std::array<unsigned char, sizeof(float) * 4> storage;
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       float fmax = std::numeric_limits<float>::max();
       unsigned char* cfmax = reinterpret_cast<unsigned char*>(&fmax);
@@ -253,7 +245,7 @@ namespace
       // Check max
       unsigned char* pdata = storage.data();
 
-      for (int i = 0, j = (sizeof(float) - 1); i < sizeof(float); ++i, --j)
+      for (size_t i = 0, j = (sizeof(float) - 1); i < sizeof(float); ++i, --j)
       {
         CHECK_EQUAL(int(cfmax[j]), int(pdata[i]));
       }
@@ -261,7 +253,7 @@ namespace
       // Check min
       pdata += sizeof(float);
 
-      for (int i = 0, j = (sizeof(float) - 1); i < sizeof(float); ++i, --j)
+      for (size_t i = 0, j = (sizeof(float) - 1); i < sizeof(float); ++i, --j)
       {
         CHECK_EQUAL(int(cfmin[j]), int(pdata[i]));
       }
@@ -269,7 +261,7 @@ namespace
       // Check lowest
       pdata += sizeof(float);
 
-      for (int i = 0, j = (sizeof(float) - 1); i < sizeof(float); ++i, --j)
+      for (size_t i = 0, j = (sizeof(float) - 1); i < sizeof(float); ++i, --j)
       {
         CHECK_EQUAL(int(cflowest[j]), int(pdata[i]));
       }
@@ -277,7 +269,7 @@ namespace
       // Check PI
       pdata += sizeof(float);
 
-      for (int i = 0, j = (sizeof(float) - 1); i < sizeof(float); ++i, --j)
+      for (size_t i = 0, j = (sizeof(float) - 1); i < sizeof(float); ++i, --j)
       {
         CHECK_EQUAL(int(cfpi[j]), int(pdata[i]));
       }
@@ -290,7 +282,6 @@ namespace
       std::array<unsigned char, sizeof(double) * 4> storage;
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       double fmax = std::numeric_limits<double>::max();
       unsigned char* cfmax = reinterpret_cast<unsigned char*>(&fmax);
@@ -315,7 +306,7 @@ namespace
       // Check max
       unsigned char* pdata = storage.data();
 
-      for (int i = 0, j = (sizeof(double) - 1); i < sizeof(double); ++i, --j)
+      for (size_t i = 0, j = (sizeof(double) - 1); i < sizeof(double); ++i, --j)
       {
         CHECK_EQUAL(int(cfmax[j]), int(pdata[i]));
       }
@@ -323,7 +314,7 @@ namespace
       // Check min
       pdata += sizeof(double);
 
-      for (int i = 0, j = (sizeof(double) - 1); i < sizeof(double); ++i, --j)
+      for (size_t i = 0, j = (sizeof(double) - 1); i < sizeof(double); ++i, --j)
       {
         CHECK_EQUAL(int(cfmin[j]), int(pdata[i]));
       }
@@ -331,7 +322,7 @@ namespace
       // Check lowest
       pdata += sizeof(double);
 
-      for (int i = 0, j = (sizeof(double) - 1); i < sizeof(double); ++i, --j)
+      for (size_t i = 0, j = (sizeof(double) - 1); i < sizeof(double); ++i, --j)
       {
         CHECK_EQUAL(int(cflowest[j]), int(pdata[i]));
       }
@@ -339,7 +330,7 @@ namespace
       // Check PI
       pdata += sizeof(double);
 
-      for (int i = 0, j = (sizeof(double) - 1); i < sizeof(double); ++i, --j)
+      for (size_t i = 0, j = (sizeof(double) - 1); i < sizeof(double); ++i, --j)
       {
         CHECK_EQUAL(int(cfpi[j]), int(pdata[i]));
       }
@@ -352,7 +343,6 @@ namespace
       std::array<unsigned char, sizeof(long double) * 4> storage;
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       long double fmax = std::numeric_limits<long double>::max();
       unsigned char* cfmax = reinterpret_cast<unsigned char*>(&fmax);
@@ -377,7 +367,7 @@ namespace
       // Check max
       unsigned char* pdata = storage.data();
 
-      for (int i = 0, j = (sizeof(long double) - 1); i < sizeof(long double); ++i, --j)
+      for (size_t i = 0, j = (sizeof(long double) - 1); i < sizeof(long double); ++i, --j)
       {
         CHECK_EQUAL(int(cfmax[j]), int(pdata[i]));
       }
@@ -385,7 +375,7 @@ namespace
       // Check min
       pdata += sizeof(long double);
 
-      for (int i = 0, j = (sizeof(long double) - 1); i < sizeof(long double); ++i, --j)
+      for (size_t i = 0, j = (sizeof(long double) - 1); i < sizeof(long double); ++i, --j)
       {
         CHECK_EQUAL(int(cfmin[j]), int(pdata[i]));
       }
@@ -393,7 +383,7 @@ namespace
       // Check lowest
       pdata += sizeof(long double);
 
-      for (int i = 0, j = (sizeof(long double) - 1); i < sizeof(long double); ++i, --j)
+      for (size_t i = 0, j = (sizeof(long double) - 1); i < sizeof(long double); ++i, --j)
       {
         CHECK_EQUAL(int(cflowest[j]), int(pdata[i]));
       }
@@ -401,7 +391,7 @@ namespace
       // Check PI
       pdata += sizeof(long double);
 
-      for (int i = 0, j = (sizeof(long double) - 1); i < sizeof(long double); ++i, --j)
+      for (size_t i = 0, j = (sizeof(long double) - 1); i < sizeof(long double); ++i, --j)
       {
         CHECK_EQUAL(int(cfpi[j]), int(pdata[i]));
       }
@@ -417,7 +407,6 @@ namespace
 
       unsigned char storage = 0;
       etl::bit_stream bit_stream(&storage, 1);
-      bit_stream.clear();
 
       for (size_t i = 0; i < flags.size(); ++i)
       {
@@ -442,7 +431,6 @@ namespace
       std::array<int8_t, 4> get_data = { int8_t(0x00), int8_t(0x00), int8_t(0x00), int8_t(0x00) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0]);
@@ -474,7 +462,6 @@ namespace
       std::array<int8_t, 4> get_data    = { int8_t(0x00), int8_t(0x00), int8_t(0x00), int8_t(0x00) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0], 5);
@@ -505,7 +492,6 @@ namespace
       std::array<uint8_t, 4> get_data = { uint8_t(0x00), uint8_t(0x00), uint8_t(0x00), uint8_t(0x00) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0]);
@@ -537,7 +523,6 @@ namespace
       std::array<uint8_t, 4> get_data    = { uint8_t(0x00), uint8_t(0x00), uint8_t(0x00), uint8_t(0x00) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0], 5);
@@ -568,7 +553,6 @@ namespace
       std::array<int16_t, 4> get_data = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0]);
@@ -600,7 +584,6 @@ namespace
       std::array<int16_t, 4> get_data    = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0], 10);
@@ -631,7 +614,6 @@ namespace
       std::array<uint16_t, 4> get_data = { uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0]);
@@ -663,7 +645,6 @@ namespace
       std::array<uint16_t, 4> get_data    = { uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0], 10);
@@ -694,7 +675,6 @@ namespace
       std::array<int32_t, 4> get_data = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0]);
@@ -726,7 +706,6 @@ namespace
       std::array<int32_t, 4> get_data    = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0], 22);
@@ -757,7 +736,6 @@ namespace
       std::array<uint32_t, 4> get_data = { uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0]);
@@ -789,7 +767,6 @@ namespace
       std::array<uint32_t, 4> get_data    = { uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000) };
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
-      bit_stream.clear();
 
       // Insert into the stream
       bit_stream.put(put_data[0], 22);
@@ -810,6 +787,144 @@ namespace
 
       CHECK(bit_stream.get(get_data[3], 22));
       CHECK_EQUAL(expect_data[3], get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(put_get_multiple_full_size)
+    {
+      char c1 = 90;
+      char c2 = -91;
+      unsigned short s1 = 23205;
+      unsigned short s2 = 42330;
+      int32_t i1 = 1520786085;   // 0x5AA55AA5
+      int32_t i2 = -1520786086;  // 0xA55AA55A
+      float f = 3.1415927f;
+      double d = 3.1415927;
+      long double ld = 3.1414927L;
+
+      std::array<unsigned char, 100> storage;
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+
+      // Insert into the stream.
+      bit_stream.put(c1);
+      bit_stream.put(s1);
+      bit_stream.put(i1);
+      bit_stream.put(f);
+      bit_stream.put(i2);
+      bit_stream.put(d);
+      bit_stream.put(s2);
+      bit_stream.put(ld);
+      bit_stream.put(c2);
+
+      bit_stream.restart();
+
+      char rc1;
+      char rc2;
+      unsigned short rs1;
+      unsigned short rs2;
+      int32_t ri1;
+      int32_t ri2;
+      float rf;
+      double rd;
+      long double rld;
+
+      // Read them all back.
+      CHECK(bit_stream.get(rc1));
+      CHECK_EQUAL(int(c1), int(rc1));
+
+      CHECK(bit_stream.get(rs1));
+      CHECK_EQUAL(s1, rs1);
+
+      CHECK(bit_stream.get(ri1));
+      CHECK_EQUAL(i1, ri1);
+
+      CHECK(bit_stream.get(rf));
+      CHECK_CLOSE(f, rf, 0.1f);
+
+      CHECK(bit_stream.get(ri2));
+      CHECK_EQUAL(i2, ri2);
+
+      CHECK(bit_stream.get(rd));
+      CHECK_CLOSE(d, rd, 0.1);
+
+      CHECK(bit_stream.get(rs2));
+      CHECK_EQUAL(s2, rs2);
+
+      CHECK(bit_stream.get(rld));
+      CHECK_CLOSE(ld, rld, 0.1);
+
+      CHECK(bit_stream.get(rc2));
+      CHECK_EQUAL(int(c2), int(rc2));
+    }
+
+    //*************************************************************************
+    TEST(put_get_multiple_variable_size)
+    {
+      char c1 = 26;             // 6 bits
+      char c2 = -10;            // 7 bits
+      unsigned short s1 = 6742; // 13 bits
+      unsigned short s2 = 1878; // 11 bits
+      int32_t i1 = 2448037;     // 23 bits
+      int32_t i2 = -10836646;   // 25 bits
+      float f = 3.1415927f;
+      double d = 3.1415927;
+      long double ld = 3.1414927L;
+
+      std::array<unsigned char, 100> storage;
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+
+      // Insert into the stream.
+      bit_stream.put(c1, 6);
+      bit_stream.put(s1, 13);
+      bit_stream.put(i1, 23);
+      bit_stream.put(f);
+      bit_stream.put(i2, 25);
+      bit_stream.put(d);
+      bit_stream.put(s2, 11);
+      bit_stream.put(ld);
+      bit_stream.put(c2, 7);
+
+      bit_stream.restart();
+
+      char rc1;
+      char rc2;
+      unsigned short rs1;
+      unsigned short rs2;
+      int32_t ri1;
+      int32_t ri2;
+      float rf;
+      double rd;
+      long double rld;
+
+      // Read them all back.
+      CHECK(bit_stream.get(rc1, 6));
+      CHECK_EQUAL(int(c1), int(rc1));
+
+      CHECK(bit_stream.get(rs1, 13));
+      CHECK_EQUAL(s1, rs1);
+
+      CHECK(bit_stream.get(ri1, 23));
+      CHECK_EQUAL(i1, ri1);
+
+      CHECK(bit_stream.get(rf));
+      CHECK_CLOSE(f, rf, 0.1f);
+
+      CHECK(bit_stream.get(ri2, 25));
+      CHECK_EQUAL(i2, ri2);
+
+      CHECK(bit_stream.get(rd));
+      CHECK_CLOSE(d, rd, 0.1);
+
+      CHECK(bit_stream.get(rs2, 11));
+      CHECK_EQUAL(s2, rs2);
+
+      CHECK(bit_stream.get(rld));
+      CHECK_CLOSE(ld, rld, 0.1);
+
+      CHECK(bit_stream.get(rc2, 7));
+      CHECK_EQUAL(int(c2), int(rc2));
     }
   };
 }
