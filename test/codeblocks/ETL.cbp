@@ -319,17 +319,7 @@
 		<Unit filename="../../src/c/ecl_timer.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../src/crc16.cpp" />
-		<Unit filename="../../src/crc16_ccitt.cpp" />
-		<Unit filename="../../src/crc16_kermit.cpp" />
-		<Unit filename="../../src/crc32.cpp" />
-		<Unit filename="../../src/crc32_c.cpp" />
-		<Unit filename="../../src/crc64_ecma.cpp" />
-		<Unit filename="../../src/crc8_ccitt.cpp" />
 		<Unit filename="../../src/error_handler.cpp" />
-		<Unit filename="../../src/pearson.cpp" />
-		<Unit filename="../../src/private/pvoidvector.cpp" />
-		<Unit filename="../../src/random.cpp" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
 		<Unit filename="../ecl_user.h" />

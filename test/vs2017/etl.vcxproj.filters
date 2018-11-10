@@ -986,9 +986,6 @@
     <ClCompile Include="..\test_xor_rotate_checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\pearson.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\binary.cpp">
       <Filter>ETL\Utilities</Filter>
     </ClCompile>
