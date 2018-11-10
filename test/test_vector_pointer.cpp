@@ -936,42 +936,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_push_back_null)
-    {
-      Compare_Data compare_data;
-      Data data;
-
-      int d;
-
-      compare_data.push_back(&d);
-
-      data.push_back();
-      data[0] = &d;
-
-      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
-
-      CHECK(is_equal);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_const_push_back_null)
-    {
-      CCompare_Data compare_data;
-      CData data;
-
-      const int d = 0;
-
-      compare_data.push_back(&d);
-
-      data.push_back();
-      data[0] = &d;
-
-      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
-
-      CHECK(is_equal);
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_excess)
     {
       Data data;
@@ -1302,7 +1266,7 @@ namespace
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_insert_position_range_excess)
     {
