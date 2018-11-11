@@ -318,7 +318,6 @@
 		<Unit filename="../../src/c/ecl_timer.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../src/error_handler.cpp" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
 		<Unit filename="../ecl_user.h" />

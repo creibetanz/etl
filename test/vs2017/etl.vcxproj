@@ -551,7 +551,6 @@
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.cpp" />
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.cpp" />
     <ClCompile Include="..\..\src\c\ecl_timer.c" />
-    <ClCompile Include="..\..\src\error_handler.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />

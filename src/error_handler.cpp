@@ -32,29 +32,5 @@ SOFTWARE.
 #include "etl/error_handler.h"
 #include "etl/nullptr.h"
 
-//*****************************************************************************
-/// The error function callback pointer.
-//*****************************************************************************
-etl::ifunction<const etl::exception&>* etl::error_handler::p_ifunction = nullptr;
 
-//*****************************************************************************
-/// Sets the error callback function.
-///\param f A reference to an etl::function object that will handler errors.
-//*****************************************************************************
-void etl::error_handler::set_callback(ifunction<const etl::exception&>& f)
-{
-  p_ifunction = &f;
-}
-
-//*****************************************************************************
-/// Sends the exception error to the user's handler function.
-///\param e The exception error.
-//*****************************************************************************
-void etl::error_handler::error(const etl::exception& e)
-{
-  if (p_ifunction != nullptr)
-  {
-    (*p_ifunction)(e);
-  }
-}
 

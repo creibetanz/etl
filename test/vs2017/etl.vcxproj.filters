@@ -986,9 +986,6 @@
     <ClCompile Include="..\test_xor_rotate_checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\error_handler.cpp">
-      <Filter>ETL\Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\c\ecl_timer.c">
       <Filter>ECL</Filter>
     </ClCompile>
