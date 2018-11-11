@@ -315,7 +315,6 @@
 		<Unit filename="../../include/etl/version.h" />
 		<Unit filename="../../include/etl/visitor.h" />
 		<Unit filename="../../include/etl/wstring.h" />
-		<Unit filename="../../src/binary.cpp" />
 		<Unit filename="../../src/c/ecl_timer.c">
 			<Option compilerVar="CC" />
 		</Unit>
