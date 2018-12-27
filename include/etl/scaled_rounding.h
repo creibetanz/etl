@@ -31,14 +31,20 @@ SOFTWARE.
 #ifndef ETL_SCALED_ROUNDING_INCLUDED
 #define ETL_SCALED_ROUNDING_INCLUDED
 
-#include <stdlib.h>
-
 #include "static_assert.h"
 #include "type_traits.h"
+#include "absolute.h"
 
 namespace etl
 {
-  //*****************************************************************************
+
+  template <typename T>
+  struct scaled_rounding_t
+  {
+    typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type type;
+  };
+
+    //*****************************************************************************
   /// A set of rounding algorithms for scaled integrals.
   /// \tparam T       The integral type.
   /// \tparam SCALING The scaling factor.
@@ -52,274 +58,299 @@ namespace etl
   /// \endcode
   /// \link http://www.clivemaxfield.com/diycalculator/sp-round.shtml
   //*****************************************************************************
-  template <typename T, const T SCALING_>
-  class scaled_rounding
+
+  //***************************************************************************
+  /// Round to more positive integer.
+  /// \param value Scaled integral.
+  /// \return Unscaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_ceiling_unscaled(T value)
   {
-  private:
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
+    typedef typename scaled_rounding_t<T>::type scale_t;
 
-    //***************************************************************************
-    // For signed integrals.
-    //***************************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<etl::is_signed<U>::value, U>::type
-      absolute(U value)
+    if (value >= 0)
     {
-      return (value < 0 ? -value : value);
+      return T((value + scale_t(SCALING)) / scale_t(SCALING));
     }
-
-    //***************************************************************************
-    // For unsigned integrals.
-    //***************************************************************************
-    template <typename U>
-    static
-      typename etl::enable_if<etl::is_unsigned<U>::value, U>::type
-      absolute(U value)
+    else
     {
-      return value;
+      return T(value / scale_t(SCALING));
     }
+  }
 
-  public:
+  //***************************************************************************
+  /// Round to more positive integer.
+  /// \param value Scaled integral.
+  /// \return Scaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_ceiling_scaled(T value)
+  {
+    typedef typename scaled_rounding_t<T>::type scale_t;
 
-    static const T SCALING      = SCALING_;
-    static const T HALF_SCALING = SCALING_ / T(2);
+    return round_ceiling_unscaled<SCALING>(value) * scale_t(SCALING);
+  }
 
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value,         "Type must be an integral");
-    ETL_STATIC_ASSERT(((HALF_SCALING * T(2)) == SCALING), "Scaling must be divisible by 2");
+  //***************************************************************************
+  /// Round to more negative integer.
+  /// \param value Scaled integral.
+  /// \return Unscaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_floor_unscaled(T value)
+  {
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
+    typedef typename scaled_rounding_t<T>::type scale_t;
 
-    //***************************************************************************
-    /// Round to more positive integer.
-    /// \param value Scaled integral.
-    /// \return Unscaled, rounded integral.
-    //***************************************************************************
-    static T round_ceiling_unscaled(T value)
+    if (value >= 0)
     {
-      if (value >= 0)
+      return T(value / scale_t(SCALING));
+    }
+    else
+    {
+      return T((value - scale_t(SCALING)) / scale_t(SCALING));
+    }
+  }
+
+  //***************************************************************************
+  /// Round to more negative integer.
+  /// \param value Scaled integral.
+  /// \return Scaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_floor_scaled(T value)
+  {
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    return T(round_floor_unscaled<SCALING>(value) * scale_t(SCALING));
+  }
+
+  //***************************************************************************
+  /// Round to nearest integer. 'Half' value is rounded up (to infinity).
+  /// Uses 'symmetric up' rounding.
+  /// \param value Scaled integral.
+  /// \return Unscaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_half_up_unscaled(T value)
+  {
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
+    ETL_STATIC_ASSERT((((SCALING / 2U) * 2U) == SCALING), "Scaling must be divisible by 2");
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    if (value >= 0)
+    {
+      return T((value + scale_t(SCALING / 2U)) / scale_t(SCALING));
+    }
+    else
+    {
+      return T((value - scale_t(SCALING / 2U)) / scale_t(SCALING));
+    }
+  }
+
+  //***************************************************************************
+  /// Round to nearest integer. 'Half' value is rounded up (to infinity).
+  /// Uses 'symmetric up' rounding.
+  /// \param value Scaled integral.
+  /// \return Scaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_half_up_scaled(T value)
+  {
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    return T(round_half_up_unscaled<SCALING>(value) * scale_t(SCALING));
+  }
+
+  //***************************************************************************
+  /// Round to nearest integer. 'Half' value is rounded down (to zero).
+  /// Uses 'symmetric down' rounding.
+  /// \param value Scaled integral.
+  /// \return Unscaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_half_down_unscaled(T value)
+  {
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
+    ETL_STATIC_ASSERT((((SCALING / 2U) * 2U) == SCALING), "Scaling must be divisible by 2");
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    if (value >= 0)
+    {
+      return T((value + scale_t((SCALING / 2U) - 1U)) / scale_t(SCALING));
+    }
+    else
+    {
+      return T((value - scale_t((SCALING / 2U) - 1U)) / scale_t(SCALING));
+    }
+  }
+
+  //***************************************************************************
+  /// Round to nearest integer. 'Half' value is rounded down (to zero).
+  /// Uses 'symmetric down' rounding.
+  /// \param value Scaled integral.
+  /// \return Scaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_half_down_scaled(T value)
+  {
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    return T(round_half_down_unscaled<SCALING>(value) * scale_t(SCALING));
+  }
+
+  //***************************************************************************
+  /// Round toward zero.
+  /// \param value Scaled integral.
+  /// \return Unscaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_zero_unscaled(T value)
+  {
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    return T(value / scale_t(SCALING));
+  }
+
+  //***************************************************************************
+  /// Round toward zero.
+  /// \param value Scaled integral.
+  /// \return Scaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_zero_scaled(T value)
+  {
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    return T(round_zero_unscaled<SCALING>(value) * scale_t(SCALING));
+  }
+
+  //***************************************************************************
+  /// Round toward infinity.
+  /// \param value Scaled integral.
+  /// \return Unscaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_infinity_unscaled(T value)
+  {
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    if (value >= 0)
+    {
+      return T((value + scale_t(SCALING)) / scale_t(SCALING));
+    }
+    else
+    {
+      return T((value - scale_t(SCALING)) / scale_t(SCALING));
+    }
+  }
+
+  //***************************************************************************
+  /// Round toward infinity.
+  /// \param value Scaled integral.
+  /// \return Ccaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_infinity_scaled(T value)
+  {
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    return T(round_infinity_unscaled<SCALING>(value) * scale_t(SCALING));
+  }
+
+  //***************************************************************************
+  /// Round to nearest integer. 'Half' value is rounded to even integral.
+  /// Also known as 'Banker's Rounding'.
+  /// \param value Scaled integral.
+  /// \return Unscaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_half_even_unscaled(T value)
+  {
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    // Half?
+    if ((etl::absolute(value) % scale_t(SCALING)) == scale_t(SCALING / 2U))
+    {
+      // Odd?
+      if ((value / scale_t(SCALING)) & 1U)
       {
-        return (value + SCALING) / SCALING;
+        return T(round_half_up_unscaled<SCALING>(value));
       }
       else
       {
-        return value / SCALING;
+        return T(round_half_down_unscaled<SCALING>(value));
       }
     }
-
-    //***************************************************************************
-    /// Round to more positive integer.
-    /// \param value Scaled integral.
-    /// \return Scaled, rounded integral.
-    //***************************************************************************
-    static T round_ceiling_scaled(T value)
+    else
     {
-      return round_ceiling_unscaled(value) * SCALING;
+      return T(round_half_up_unscaled<SCALING>(value));
     }
+  }
 
-    //***************************************************************************
-    /// Round to more negative integer.
-    /// \param value Scaled integral.
-    /// \return Unscaled, rounded integral.
-    //***************************************************************************
-    static T round_floor_unscaled(T value)
+  //***************************************************************************
+  /// Round to nearest integer. 'Half' value is rounded to even integral.
+  /// Also known as 'Banker's Rounding'.
+  /// \param value Scaled integral.
+  /// \return Scaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_half_even_scaled(T value)
+  {
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    return T(round_half_even_unscaled<SCALING>(value) * scale_t(SCALING));
+  }
+
+  //***************************************************************************
+  /// Round to nearest integer. 'Half' value is rounded to odd integral.
+  /// Also known as 'Banker's Rounding'.
+  /// \param value Scaled integral.
+  /// \return Unscaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_half_odd_unscaled(T value)
+  {
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
+    typedef typename scaled_rounding_t<T>::type scale_t;
+
+    // Half?
+    if ((etl::absolute(value) % scale_t(SCALING)) == scale_t(SCALING / 2U))
     {
-      if (value >= 0)
+      // Odd?
+      if ((value / scale_t(SCALING)) & 1U)
       {
-        return value / SCALING;
+        return T(round_half_down_unscaled<SCALING>(value));
       }
       else
       {
-        return (value - SCALING) / SCALING;
+        return T(round_half_up_unscaled<SCALING>(value));
       }
     }
-
-    //***************************************************************************
-    /// Round to more negative integer.
-    /// \param value Scaled integral.
-    /// \return Scaled, rounded integral.
-    //***************************************************************************
-    static T round_floor_scaled(T value)
+    else
     {
-      return round_floor_unscaled(value) * SCALING;
+      return T(round_half_up_unscaled<SCALING>(value));
     }
+  }
 
-    //***************************************************************************
-    /// Round to nearest integer. 'Half' value is rounded up (to infinity).
-    /// Uses 'symmetric up' rounding.
-    /// \param value Scaled integral.
-    /// \return Unscaled, rounded integral.
-    //***************************************************************************
-    static T round_half_up_unscaled(T value)
-    {
-      if (value >= 0)
-      {
-        return (value + HALF_SCALING) / SCALING;
-      }
-      else
-      {
-        return (value - HALF_SCALING) / SCALING;
-      }
-    }
+  //***************************************************************************
+  /// Round to nearest integer. 'Half' value is rounded to odd integral.
+  /// Also known as 'Banker's Rounding'.
+  /// \param value Scaled integral.
+  /// \return Scaled, rounded integral.
+  //***************************************************************************
+  template <const size_t SCALING, typename T>
+  T round_half_odd_scaled(T value)
+  {
+    typedef typename scaled_rounding_t<T>::type scale_t;
 
-    //***************************************************************************
-    /// Round to nearest integer. 'Half' value is rounded up (to infinity).
-    /// Uses 'symmetric up' rounding.
-    /// \param value Scaled integral.
-    /// \return Scaled, rounded integral.
-    //***************************************************************************
-    static T round_half_up_scaled(T value)
-    {
-      return round_half_up_unscaled(value) * SCALING;
-    }
-
-    //***************************************************************************
-    /// Round to nearest integer. 'Half' value is rounded down (to zero).
-    /// Uses 'symmetric down' rounding.
-    /// \param value Scaled integral.
-    /// \return Unscaled, rounded integral.
-    //***************************************************************************
-    static T round_half_down_unscaled(T value)
-    {
-      if (value >= 0)
-      {
-        return (value + (HALF_SCALING - 1)) / SCALING;
-      }
-      else
-      {
-        return (value - (HALF_SCALING - 1)) / SCALING;
-      }
-    }
-
-    //***************************************************************************
-    /// Round to nearest integer. 'Half' value is rounded down (to zero).
-    /// Uses 'symmetric down' rounding.
-    /// \param value Scaled integral.
-    /// \return Scaled, rounded integral.
-    //***************************************************************************
-    static T round_half_down_scaled(T value)
-    {
-      return round_half_down_unscaled(value) * SCALING;
-    }
-
-    //***************************************************************************
-    /// Round toward zero.
-    /// \param value Scaled integral.
-    /// \return Unscaled, rounded integral.
-    //***************************************************************************
-    static T round_zero_unscaled(T value)
-    {
-      return value / SCALING;
-    }
-
-    //***************************************************************************
-    /// Round toward zero.
-    /// \param value Scaled integral.
-    /// \return Scaled, rounded integral.
-    //***************************************************************************
-    static T round_zero_scaled(T value)
-    {
-      return round_zero_unscaled(value) * SCALING;
-    }
-
-    //***************************************************************************
-    /// Round toward infinity.
-    /// \param value Scaled integral.
-    /// \return Unscaled, rounded integral.
-    //***************************************************************************
-    static T round_infinity_unscaled(T value)
-    {
-      if (value >= 0)
-      {
-        return (value + SCALING) / SCALING;
-      }
-      else
-      {
-        return (value - SCALING) / SCALING;
-      }
-    }
-
-    //***************************************************************************
-    /// Round toward infinity.
-    /// \param value Scaled integral.
-    /// \return Ccaled, rounded integral.
-    //***************************************************************************
-    static T round_infinity_scaled(T value)
-    {
-      return round_infinity_unscaled(value) * SCALING;
-    }
-
-    //***************************************************************************
-    /// Round to nearest integer. 'Half' value is rounded to even integral.
-    /// Also known as 'Banker's Rounding'.
-    /// \param value Scaled integral.
-    /// \return Unscaled, rounded integral.
-    //***************************************************************************
-    static T round_half_even_unscaled(T value)
-    {
-      if (absolute(value) % SCALING == HALF_SCALING)
-      {
-        // Odd?
-        if ((value / SCALING) & 1U)
-        {
-          return round_half_up_unscaled(value);
-        }
-        else
-        {
-          return round_half_down_unscaled(value);
-        }
-      }
-      else
-      {
-        return round_half_up_unscaled(value);
-      }
-    }
-
-    //***************************************************************************
-    /// Round to nearest integer. 'Half' value is rounded to even integral.
-    /// Also known as 'Banker's Rounding'.
-    /// \param value Scaled integral.
-    /// \return Scaled, rounded integral.
-    //***************************************************************************
-    static T round_half_even_scaled(T value)
-    {
-      return round_half_even_unscaled(value) * SCALING;
-    }
-
-    //***************************************************************************
-    /// Round to nearest integer. 'Half' value is rounded to odd integral.
-    /// Also known as 'Banker's Rounding'.
-    /// \param value Scaled integral.
-    /// \return Unscaled, rounded integral.
-    //***************************************************************************
-    static T round_half_odd_unscaled(T value)
-    {
-      if (absolute(value) % SCALING == HALF_SCALING)
-      {
-        // Odd?
-        if ((value / SCALING) & 1U)
-        {
-          return round_half_down_unscaled(value);
-        }
-        else
-        {
-          return round_half_up_unscaled(value);
-        }
-      }
-      else
-      {
-        return round_half_up_unscaled(value);
-      }
-    }
-
-    //***************************************************************************
-    /// Round to nearest integer. 'Half' value is rounded to odd integral.
-    /// Also known as 'Banker's Rounding'.
-    /// \param value Scaled integral.
-    /// \return Scaled, rounded integral.
-    //***************************************************************************
-    static T round_half_odd_scaled(T value)
-    {
-      return round_half_odd_unscaled(value) * SCALING;
-    }
-  };
+    return T(round_half_odd_unscaled<SCALING>(value) * scale_t(SCALING));
+  }
 }
 
 #endif

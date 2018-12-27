@@ -36,8 +36,6 @@ namespace
 {
   std::array<int, 12> source = { 54, 55, 56, 64, 65, 66, -54, -55, -56, -64, -65, -66 };
 
-  typedef etl::scaled_rounding<int, 10> Round;
-
   SUITE(test_scaled_rounding)
   {
     //*************************************************************************
@@ -45,18 +43,18 @@ namespace
     {
       std::array<int, 12> expected = { 60, 60, 60, 70, 70, 70, -50, -50, -50, -60, -60, -60 };
 
-      CHECK_EQUAL(expected[0],  Round::round_ceiling_scaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_ceiling_scaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_ceiling_scaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_ceiling_scaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_ceiling_scaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_ceiling_scaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_ceiling_scaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_ceiling_scaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_ceiling_scaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_ceiling_scaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_ceiling_scaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_ceiling_scaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_ceiling_scaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_ceiling_scaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_ceiling_scaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_ceiling_scaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_ceiling_scaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_ceiling_scaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_ceiling_scaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_ceiling_scaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_ceiling_scaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_ceiling_scaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_ceiling_scaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_ceiling_scaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -64,18 +62,18 @@ namespace
     {
       std::array<int, 12> expected = { 6, 6, 6, 7, 7, 7, -5, -5, -5, -6, -6, -6 };
 
-      CHECK_EQUAL(expected[0],  Round::round_ceiling_unscaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_ceiling_unscaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_ceiling_unscaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_ceiling_unscaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_ceiling_unscaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_ceiling_unscaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_ceiling_unscaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_ceiling_unscaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_ceiling_unscaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_ceiling_unscaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_ceiling_unscaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_ceiling_unscaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_ceiling_unscaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_ceiling_unscaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_ceiling_unscaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_ceiling_unscaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_ceiling_unscaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_ceiling_unscaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_ceiling_unscaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_ceiling_unscaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_ceiling_unscaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_ceiling_unscaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_ceiling_unscaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_ceiling_unscaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -83,18 +81,18 @@ namespace
     {
       std::array<int, 12> expected = { 50, 50, 50, 60, 60, 60, -60, -60, -60, -70, -70, -70 };
 
-      CHECK_EQUAL(expected[0],  Round::round_floor_scaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_floor_scaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_floor_scaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_floor_scaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_floor_scaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_floor_scaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_floor_scaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_floor_scaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_floor_scaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_floor_scaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_floor_scaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_floor_scaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_floor_scaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_floor_scaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_floor_scaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_floor_scaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_floor_scaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_floor_scaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_floor_scaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_floor_scaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_floor_scaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_floor_scaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_floor_scaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_floor_scaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -102,18 +100,18 @@ namespace
     {
       std::array<int, 12> expected = { 5, 5, 5, 6, 6, 6, -6, -6, -6, -7, -7, -7 };
 
-      CHECK_EQUAL(expected[0],  Round::round_floor_unscaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_floor_unscaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_floor_unscaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_floor_unscaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_floor_unscaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_floor_unscaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_floor_unscaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_floor_unscaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_floor_unscaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_floor_unscaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_floor_unscaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_floor_unscaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_floor_unscaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_floor_unscaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_floor_unscaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_floor_unscaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_floor_unscaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_floor_unscaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_floor_unscaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_floor_unscaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_floor_unscaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_floor_unscaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_floor_unscaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_floor_unscaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -121,18 +119,18 @@ namespace
     {
       std::array<int, 12> expected = { 50, 60, 60, 60, 70, 70, -50, -60, -60, -60, -70, -70 };
 
-      CHECK_EQUAL(expected[0],  Round::round_half_up_scaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_half_up_scaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_half_up_scaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_half_up_scaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_half_up_scaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_half_up_scaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_half_up_scaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_half_up_scaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_half_up_scaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_half_up_scaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_half_up_scaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_half_up_scaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_half_up_scaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_half_up_scaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_half_up_scaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_half_up_scaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_half_up_scaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_half_up_scaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_half_up_scaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_half_up_scaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_half_up_scaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_half_up_scaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_half_up_scaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_half_up_scaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -140,18 +138,18 @@ namespace
     {
       std::array<int, 12> expected = { 5, 6, 6, 6, 7, 7, -5, -6, -6, -6, -7, -7 };
 
-      CHECK_EQUAL(expected[0],  Round::round_half_up_unscaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_half_up_unscaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_half_up_unscaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_half_up_unscaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_half_up_unscaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_half_up_unscaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_half_up_unscaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_half_up_unscaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_half_up_unscaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_half_up_unscaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_half_up_unscaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_half_up_unscaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_half_up_unscaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_half_up_unscaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_half_up_unscaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_half_up_unscaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_half_up_unscaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_half_up_unscaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_half_up_unscaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_half_up_unscaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_half_up_unscaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_half_up_unscaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_half_up_unscaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_half_up_unscaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -159,18 +157,18 @@ namespace
     {
       std::array<int, 12> expected = { 50, 50, 60, 60, 60, 70, -50, -50, -60, -60, -60, -70 };
 
-      CHECK_EQUAL(expected[0],  Round::round_half_down_scaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_half_down_scaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_half_down_scaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_half_down_scaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_half_down_scaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_half_down_scaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_half_down_scaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_half_down_scaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_half_down_scaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_half_down_scaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_half_down_scaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_half_down_scaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_half_down_scaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_half_down_scaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_half_down_scaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_half_down_scaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_half_down_scaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_half_down_scaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_half_down_scaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_half_down_scaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_half_down_scaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_half_down_scaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_half_down_scaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_half_down_scaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -178,18 +176,18 @@ namespace
     {
       std::array<int, 12> expected = { 5, 5, 6, 6, 6, 7, -5, -5, -6, -6, -6, -7 };
 
-      CHECK_EQUAL(expected[0],  Round::round_half_down_unscaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_half_down_unscaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_half_down_unscaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_half_down_unscaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_half_down_unscaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_half_down_unscaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_half_down_unscaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_half_down_unscaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_half_down_unscaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_half_down_unscaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_half_down_unscaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_half_down_unscaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_half_down_unscaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_half_down_unscaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_half_down_unscaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_half_down_unscaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_half_down_unscaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_half_down_unscaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_half_down_unscaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_half_down_unscaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_half_down_unscaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_half_down_unscaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_half_down_unscaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_half_down_unscaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -197,18 +195,18 @@ namespace
     {
       std::array<int, 12> expected = { 50, 50, 50, 60, 60, 60, -50, -50, -50, -60, -60, -60 };
 
-      CHECK_EQUAL(expected[0],  Round::round_zero_scaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_zero_scaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_zero_scaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_zero_scaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_zero_scaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_zero_scaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_zero_scaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_zero_scaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_zero_scaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_zero_scaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_zero_scaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_zero_scaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_zero_scaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_zero_scaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_zero_scaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_zero_scaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_zero_scaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_zero_scaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_zero_scaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_zero_scaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_zero_scaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_zero_scaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_zero_scaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_zero_scaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -216,18 +214,18 @@ namespace
     {
       std::array<int, 12> expected = { 5, 5, 5, 6, 6, 6, -5, -5, -5, -6, -6, -6 };
 
-      CHECK_EQUAL(expected[0],  Round::round_zero_unscaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_zero_unscaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_zero_unscaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_zero_unscaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_zero_unscaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_zero_unscaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_zero_unscaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_zero_unscaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_zero_unscaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_zero_unscaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_zero_unscaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_zero_unscaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_zero_unscaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_zero_unscaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_zero_unscaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_zero_unscaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_zero_unscaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_zero_unscaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_zero_unscaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_zero_unscaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_zero_unscaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_zero_unscaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_zero_unscaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_zero_unscaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -235,18 +233,18 @@ namespace
     {
       std::array<int, 12> expected = { 60, 60, 60, 70, 70, 70, -60, -60, -60, -70, -70, -70 };
 
-      CHECK_EQUAL(expected[0],  Round::round_infinity_scaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_infinity_scaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_infinity_scaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_infinity_scaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_infinity_scaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_infinity_scaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_infinity_scaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_infinity_scaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_infinity_scaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_infinity_scaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_infinity_scaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_infinity_scaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_infinity_scaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_infinity_scaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_infinity_scaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_infinity_scaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_infinity_scaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_infinity_scaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_infinity_scaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_infinity_scaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_infinity_scaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_infinity_scaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_infinity_scaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_infinity_scaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -254,18 +252,18 @@ namespace
     {
       std::array<int, 12> expected = { 6, 6, 6, 7, 7, 7, -6, -6, -6, -7, -7, -7 };
 
-      CHECK_EQUAL(expected[0],  Round::round_infinity_unscaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_infinity_unscaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_infinity_unscaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_infinity_unscaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_infinity_unscaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_infinity_unscaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_infinity_unscaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_infinity_unscaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_infinity_unscaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_infinity_unscaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_infinity_unscaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_infinity_unscaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_infinity_unscaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_infinity_unscaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_infinity_unscaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_infinity_unscaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_infinity_unscaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_infinity_unscaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_infinity_unscaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_infinity_unscaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_infinity_unscaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_infinity_unscaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_infinity_unscaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_infinity_unscaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -273,18 +271,18 @@ namespace
     {
       std::array<int, 12> expected = { 50, 60, 60, 60, 60, 70, -50, -60, -60, -60, -60, -70 };
 
-      CHECK_EQUAL(expected[0],  Round::round_half_even_scaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_half_even_scaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_half_even_scaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_half_even_scaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_half_even_scaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_half_even_scaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_half_even_scaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_half_even_scaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_half_even_scaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_half_even_scaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_half_even_scaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_half_even_scaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_half_even_scaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_half_even_scaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_half_even_scaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_half_even_scaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_half_even_scaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_half_even_scaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_half_even_scaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_half_even_scaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_half_even_scaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_half_even_scaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_half_even_scaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_half_even_scaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -292,18 +290,18 @@ namespace
     {
       std::array<int, 12> expected = { 5, 6, 6, 6, 6, 7, -5, -6, -6, -6, -6, -7 };
 
-      CHECK_EQUAL(expected[0],  Round::round_half_even_unscaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_half_even_unscaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_half_even_unscaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_half_even_unscaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_half_even_unscaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_half_even_unscaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_half_even_unscaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_half_even_unscaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_half_even_unscaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_half_even_unscaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_half_even_unscaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_half_even_unscaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_half_even_unscaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_half_even_unscaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_half_even_unscaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_half_even_unscaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_half_even_unscaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_half_even_unscaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_half_even_unscaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_half_even_unscaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_half_even_unscaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_half_even_unscaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_half_even_unscaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_half_even_unscaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -311,18 +309,18 @@ namespace
     {
       std::array<int, 12> expected = { 50, 50, 60, 60, 70, 70, -50, -50, -60, -60, -70, -70 };
 
-      CHECK_EQUAL(expected[0],  Round::round_half_odd_scaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_half_odd_scaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_half_odd_scaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_half_odd_scaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_half_odd_scaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_half_odd_scaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_half_odd_scaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_half_odd_scaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_half_odd_scaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_half_odd_scaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_half_odd_scaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_half_odd_scaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_half_odd_scaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_half_odd_scaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_half_odd_scaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_half_odd_scaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_half_odd_scaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_half_odd_scaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_half_odd_scaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_half_odd_scaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_half_odd_scaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_half_odd_scaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_half_odd_scaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_half_odd_scaled<10>(source[11]));
     }
 
     //*************************************************************************
@@ -330,18 +328,18 @@ namespace
     {
       std::array<int, 12> expected = { 5, 5, 6, 6, 7, 7, -5, -5, -6, -6, -7, -7 };
 
-      CHECK_EQUAL(expected[0],  Round::round_half_odd_unscaled(source[0]));
-      CHECK_EQUAL(expected[1],  Round::round_half_odd_unscaled(source[1]));
-      CHECK_EQUAL(expected[2],  Round::round_half_odd_unscaled(source[2]));
-      CHECK_EQUAL(expected[3],  Round::round_half_odd_unscaled(source[3]));
-      CHECK_EQUAL(expected[4],  Round::round_half_odd_unscaled(source[4]));
-      CHECK_EQUAL(expected[5],  Round::round_half_odd_unscaled(source[5]));
-      CHECK_EQUAL(expected[6],  Round::round_half_odd_unscaled(source[6]));
-      CHECK_EQUAL(expected[7],  Round::round_half_odd_unscaled(source[7]));
-      CHECK_EQUAL(expected[8],  Round::round_half_odd_unscaled(source[8]));
-      CHECK_EQUAL(expected[9],  Round::round_half_odd_unscaled(source[9]));
-      CHECK_EQUAL(expected[10], Round::round_half_odd_unscaled(source[10]));
-      CHECK_EQUAL(expected[11], Round::round_half_odd_unscaled(source[11]));
+      CHECK_EQUAL(expected[0],  etl::round_half_odd_unscaled<10>(source[0]));
+      CHECK_EQUAL(expected[1],  etl::round_half_odd_unscaled<10>(source[1]));
+      CHECK_EQUAL(expected[2],  etl::round_half_odd_unscaled<10>(source[2]));
+      CHECK_EQUAL(expected[3],  etl::round_half_odd_unscaled<10>(source[3]));
+      CHECK_EQUAL(expected[4],  etl::round_half_odd_unscaled<10>(source[4]));
+      CHECK_EQUAL(expected[5],  etl::round_half_odd_unscaled<10>(source[5]));
+      CHECK_EQUAL(expected[6],  etl::round_half_odd_unscaled<10>(source[6]));
+      CHECK_EQUAL(expected[7],  etl::round_half_odd_unscaled<10>(source[7]));
+      CHECK_EQUAL(expected[8],  etl::round_half_odd_unscaled<10>(source[8]));
+      CHECK_EQUAL(expected[9],  etl::round_half_odd_unscaled<10>(source[9]));
+      CHECK_EQUAL(expected[10], etl::round_half_odd_unscaled<10>(source[10]));
+      CHECK_EQUAL(expected[11], etl::round_half_odd_unscaled<10>(source[11]));
     }
   };
 }

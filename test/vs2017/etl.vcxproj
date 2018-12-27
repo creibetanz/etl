@@ -374,6 +374,7 @@
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\fsm_generator.h" />
     <ClInclude Include="..\..\include\etl\largest_generator.h" />
+    <ClInclude Include="..\..\include\etl\absolute.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />
     <ClInclude Include="..\..\include\etl\math_constants.h" />
