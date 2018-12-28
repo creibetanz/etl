@@ -33,12 +33,15 @@ SOFTWARE.
 
 namespace
 {
+  const size_t SAMPLE_SIZE = 10U;
+  const size_t SCALING = 100U;
+
   SUITE(test_cumulative_moving_average)
   {
     //*************************************************************************
     TEST(integral_signed_average_positive)
     {
-      typedef etl::cumulative_moving_average<int, 10, 100> CMA;
+      typedef etl::cumulative_moving_average<int, SAMPLE_SIZE, SCALING> CMA;
       CMA cma(0);
 
       CHECK_EQUAL(0, cma.value());
@@ -59,7 +62,7 @@ namespace
     //*************************************************************************
     TEST(integral_signed_average_negative)
     {
-      typedef etl::cumulative_moving_average<int, 10, 100> CMA;
+      typedef etl::cumulative_moving_average<int, SAMPLE_SIZE, SCALING> CMA;
       CMA cma(0);
 
       CHECK_EQUAL(0, cma.value());
@@ -78,9 +81,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST(integral_unsigned_average_positive)
+    {
+      typedef etl::cumulative_moving_average<unsigned int, SAMPLE_SIZE, SCALING> CMA;
+      CMA cma(0U);
+
+      CHECK_EQUAL(0U, cma.value());
+
+      cma.add(9U);
+      cma.add(1U);
+      cma.add(8U);
+      cma.add(2U);
+      cma.add(7U);
+      cma.add(3U);
+      cma.add(6U);
+      cma.add(4U);
+      cma.add(5U);
+
+      CHECK_EQUAL(280U, cma.value());
+    }
+
+    //*************************************************************************
     TEST(floating_point_average)
     {
-      typedef etl::cumulative_moving_average<double, 10> CMA;
+      typedef etl::cumulative_moving_average<double, SAMPLE_SIZE> CMA;
       CMA cma(0);
 
       CHECK_EQUAL(0.0, cma.value());
