@@ -1,4 +1,58 @@
 ===============================================================================
+14.18.1
+Changed etl::format_sepc template to etl::basic_firmat_spec.
+Created individual format_spec typedefs for each string type.
+
+===============================================================================
+14.18.0
+Added etl::to_string, etl::to_wstring, etl::to_u16string and etl::to_u32string
+plus formating support for integrals.
+
+===============================================================================
+14.17.0
+Added C++11 variadic templates for etl::observer.
+
+===============================================================================
+14.16.0
+Added C++11 variadic templates for etl::visitable and etl::visitor.
+
+===============================================================================
+14.15.0
+Added external buffer support for vector.
+
+===============================================================================
+14.14.2
+Modified 'truncated' to only be cleared on 'clear()' or 'assign()'.
+Added assignment from zero terminated string pointer.
+
+===============================================================================
+14.14.1
+Fixed bug where 'truncated' was not always set correctly for strings.
+
+===============================================================================
+14.14.0
+Fixed string push_back() bug where the internal terminator was not updated.
+Basic Conan package added.
+Added const ref istring constructors.
+Updated profiles for C++17.
+
+===============================================================================
+14.13.1
+Modified etl::queue_spsc_locked parameters to 'const'.
+
+===============================================================================
+14.13.0
+Added etl::queue_spsc_locked with injected locking functions.
+
+===============================================================================
+14.12.0
+Enabled emplace functions for 'No STL'.
+
+===============================================================================
+14.11.3
+Moved C++03 force macros to test profile.
+
+===============================================================================
 14.11.2
 Fix inconsistent ETL_FILE definitions.
 
