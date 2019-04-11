@@ -51,8 +51,6 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "24"
 
-#define ETL_VARIANT_FORCE_CPP03 0
-
 //*****************************************************************************
 ///\defgroup variant variant
 /// A class that can contain one a several specified types in a type safe manner.
@@ -713,7 +711,7 @@ namespace etl
       type_id = other.type_id;
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VARIANT_FORCE_CPP03
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_VARIANT_FORCE_CPP03)
     //*************************************************************************
     /// Emplace with variadic constructor parameters.
     //*************************************************************************

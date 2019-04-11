@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2018 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,27 +28,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_GCC_LINUX_X86_INCLUDED
-#define ETL_GCC_LINUX_X86_INCLUDED
+#ifndef ETL_NEGATIVE_INCLUDED
+#define ETL_NEGATIVE_INCLUDED
 
-//*****************************************************************************
-// GCC
-//*****************************************************************************
+#include "type_traits.h"
 
-#define ETL_TARGET_DEVICE_X86
-#define ETL_TARGET_OS_LINUX
-#define ETL_COMPILER_GCC
-#ifdef __cplusplus
-  #define ETL_CPP11_SUPPORTED                      (__cplusplus >= 201103L)
-  #define ETL_CPP14_SUPPORTED                      (__cplusplus >= 201402L)
-  #define ETL_CPP17_SUPPORTED                      (__cplusplus >= 201703L)
-#else
-  #define ETL_CPP11_SUPPORTED                      0
-  #define ETL_CPP14_SUPPORTED                      0
-  #define ETL_CPP17_SUPPORTED                      0
+namespace etl
+{
+  //***************************************************************************
+  // For signed types.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_signed<T>::value, bool>::type
+    is_negative(const T value)
+  {
+    return (value < T(0));
+  }
+
+  //***************************************************************************
+  // For unsigned types.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+    is_negative(const T)
+  {
+    return false;
+  }
+}
+
 #endif
-#define ETL_NO_NULLPTR_SUPPORT                     !ETL_CPP11_SUPPORTED
-#define ETL_NO_LARGE_CHAR_SUPPORT                  !ETL_CPP11_SUPPORTED
-#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED ETL_CPP14_SUPPORTED
 
-#endif
